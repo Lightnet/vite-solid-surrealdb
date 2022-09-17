@@ -32,7 +32,7 @@
 ```
 npm install nodemon
 ```
-	This for htpp request server api.
+	This for http request server api files auto restart in server side script.
 
 ## windows:
 	Need to use command line since stand alone execute program for database.
@@ -47,6 +47,8 @@ memory = does not store just tmp ram stpre
 
 	The surreal app needs to be run to run surrealql / sql script.
 
+  Note below this section are guide on trouble shooting. There is script check if user count is zero to set up database first time.
+
 - https://surrealdb.com/docs/start
 
 ```command line
@@ -56,6 +58,21 @@ curl --request POST \
 	--user "root:root" \
 	--data "${DATA}" \
 	http://localhost:8000/sql
+```
+
+```js
+let query = 'INFO FOR DB;'
+let response = await fetch('http://localhost:8000/sql',{
+		method:'POST',
+		headers:{
+			"Authorization": 'Basic ' + textToBase64('root'+':'+'root') ,
+			"NS": "test",
+			"DB": "test",
+			"Content-Type":"application/json"
+		},
+		body:query
+	})
+	let data = await response.json();
 ```
 
 Note you can use REST API or command line from current surrealdb.

@@ -26,6 +26,7 @@ const IndexMenus = () => {
     "/signin",
     "/signup",
     "/signout",
+    "/testlab",
   ];
 
   const displayMenu = createMemo(()=>{
@@ -40,6 +41,7 @@ const IndexMenus = () => {
       return ( <div>
         <Link class="btnLink" href="/">Home</Link><span> | </span>
         <Link class="btnLink" href="/about">About</Link><span> | </span>
+        <Link class="btnLink" href="/testlab">Test Lab</Link><span> | </span>
         </div>)
     }else{
       //console.log("NOT FOUND")

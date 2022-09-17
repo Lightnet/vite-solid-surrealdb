@@ -18,7 +18,7 @@ import { createServer as createViteServer } from 'vite'
 //import * as vite from 'vite'
 
 import routeAPI from  "./src/server/api.js"
-import {getDB} from "./libs/database.js"
+import { getDB } from "./libs/database.js"
 let db;
 
 console.log("script server.js")

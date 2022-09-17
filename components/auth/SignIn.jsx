@@ -10,8 +10,8 @@ import { useAuth } from './AuthProvider'
 
 export default function SignIn() {
 
-  const [alias, setAlias] = createSignal('')
-  const [passphrase, setPassphrase] = createSignal('')
+  const [alias, setAlias] = createSignal('test')
+  const [passphrase, setPassphrase] = createSignal('pass')
   const [email, setEmail] = createSignal('')
 
   const [,{setToken}] = useAuth();

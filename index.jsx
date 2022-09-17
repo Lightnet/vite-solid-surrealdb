@@ -41,6 +41,10 @@ const routes = [
     path: '/signout',
     component: lazy(() => import('./components/auth/SignOut')),
   },
+  {
+    path: '/testlab',
+    component: lazy(() => import('./pages/testlab')),
+  },
 ];
 
 const App = () => {

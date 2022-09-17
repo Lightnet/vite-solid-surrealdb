@@ -5,7 +5,7 @@
 */
 
 import { Link } from '@solidjs/router'
-import { createEffect } from 'solid-js'
+//import { createEffect } from 'solid-js'
 import { useAuth } from '../components/auth/AuthProvider';
 
 export default function PageIndex() {
@@ -21,7 +21,6 @@ export default function PageIndex() {
         <Link href='/signin'>Sign In</Link><span> | </span>
         <Link href='/signup'>Sign Up</Link><span> | </span>
       </>)}
-      
     </div>
   )
 }
