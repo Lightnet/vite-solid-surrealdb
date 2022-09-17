@@ -1,5 +1,5 @@
 /*
-  Project Name: ss-rts
+  Project Name: vite-solid-surrealdb
   License: MIT
   Created by: Lightnet
 */

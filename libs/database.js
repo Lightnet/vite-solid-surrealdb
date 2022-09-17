@@ -1,3 +1,9 @@
+/*
+  Project Name: vite-solid-surrealdb
+  License: MIT
+  Created by: Lightnet
+*/
+
 import Surreal from 'surrealdb.js';
 
 /*
