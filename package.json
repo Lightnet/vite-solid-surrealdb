@@ -1,0 +1,28 @@
+{
+  "name": "vite-solid-surrealdb",
+  "version": "1.0.0",
+  "description": "prototype for testing surreal database",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon --watch src ./vite_express_server.js localhost 3000",
+    "vite": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "server": "node vite_express_server.js",
+    "wserver": "node vite_express_server.js"
+  },
+  "dependencies": {
+    "@solidjs/router": "^0.4.3",
+    "@supabase/supabase-js": "^1.35.6",
+    "express": "^4.18.1",
+    "solid-js": "^1.5.4",
+    "solid-meta": "^0.28.1",
+    "solid-utils": "^0.8.1",
+    "surrealdb.js": "^0.3.1",
+    "vite-plugin-solid": "^2.3.0"
+  },
+  "nodemonConfig": {
+    "ignore": ["**/test/**", "**/docs/**"],
+    "delay": 2500
+  }
+}
