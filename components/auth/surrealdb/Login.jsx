@@ -6,14 +6,15 @@
 
 // https://stackoverflow.com/questions/68849233/convert-a-string-to-base64-in-javascript-btoa-and-atob-are-deprecated
 // https://surrealdb.com/docs/start
+// https://github.com/surrealdb/surrealdb.js/issues/11
 // 
 // 
-// 
-
+//import * as Buffer from 'buffer-esm'
 import { Link, useNavigate } from '@solidjs/router'
 import { createEffect, createSignal } from 'solid-js'
 //import { useAuth } from './AuthProvider'
 //import Surreal from 'surrealdb.js'
+import SurrealDB from 'surrealdb'
 //import { Buffer } from 'buffer';
 
 export default function Login() {
@@ -24,6 +25,8 @@ export default function Login() {
   const [alias, setAlias] = createSignal('test')
   const [passphrase, setPassphrase] = createSignal('pass')
   const [email, setEmail] = createSignal('pass')
+
+  //console.log(Buffer)
 
   //const [,{setToken}] = useAuth();
   //console.log(Buffer)
@@ -39,6 +42,7 @@ export default function Login() {
     console.log(passphrase())
     try{
 
+      /*
       let query = "CREATE user;"
       query="INFO FOR DB;"
 
@@ -56,22 +60,21 @@ export default function Login() {
       console.log(response)
       let data = await response.json();
       console.log(data)
-
-      /*
-      const db = new Surreal('http://127.0.0.1:8000/rpc');
-
-      // Signin to a scope from the browser
-      await db.signin({
-        NS: 'test',
-        DB: 'test',
-        SC: 'user',//scope 
-        user: alias() +'@surrealdb.test',
-        pass: passphrase(),
-      });
-
-      // Select a specific namespace / database
-		  await db.use('test', 'test');
       */
+
+      const db = new SurrealDB('http://127.0.0.1:8000', {
+        user: 'root',
+        pass: 'root',
+        database: 'test',
+        namespace: 'test',
+      });
+      console.log(db)
+
+      //let result = await db.Query('SELECT * FROM user;')
+      let result = await db.Query('select *  from person;')
+      console.log(result)
+
+
       
     }catch(e){
       console.log(e)

@@ -4,18 +4,34 @@
 - prototype
 - testing / learning ...
 
+# Programs:
+- Nodejs
+- SurrealDB 1.0.0 beta 7
+
+
 # Information:
 
- Using the vite and solid js package with nodejs.
+ Using the vite and solid js package with nodejs to run http server web.
 
  SurrealDB has couple of way of handle database for json, doc, strict and messy table, permissions and events.
 
- There are two ways of doing things to connect to the database. One is server and other is client. 
+ There are two or more ways of doing things to connect to the Surreal database. One is server and other is client. The fetch post work for javascript client for REST API for SurealQL. Note websocket is in docs but not yet added.
  
- Note you have to set up sign up and sign in script access. Not yet scripted yet but a set up guide.
+ Note you have to set up sign up and sign in script access. By default it empty and dev must set up their own logic for login and signup. It is scripted for checks but a set up guide. Work in progress.
 
- Since SurrealDB build on rust language. There is no UI since SurrealDB can used http Rest API query or SQL script. As well there command line http format.
- 
+ Since SurrealDB build on rust language. There is no UI that not yet release. Since SurrealDB can used http Rest API query or SQL script. As well there command line and http format.
+
+There are two packages for server and client.
+```
+// https://surrealdb.com/usecase/serverless
+npm install surrealdb //client
+// https://surrealdb.com/docs/integration/libraries/nodejs
+npm install surrealdb.js //server
+```
+	Note api might change. But should be simple or same format call.
+
+
+
  
  You can read more on the docs on their site.
 
@@ -43,7 +59,7 @@ surreal start --log debug --user root --pass root memory
 ```
 memory = does not store just tmp ram stpre
 
-## database set up:
+## database query and access:
 
 	The surreal app needs to be run to run surrealql / sql script.
 
@@ -75,15 +91,37 @@ let response = await fetch('http://localhost:8000/sql',{
 	let data = await response.json();
 ```
 
+```js
+import SurrealDB from 'surrealdb'
+const db = new SurrealDB('http://127.0.0.1:8000', {
+	user: 'root',
+	pass: 'root',
+	database: 'test',
+	namespace: 'test',
+});
+console.log(db)
+
+//let result = await db.Query('SELECT * FROM user;')
+//let result = await db.Query('select *  from person;')
+//console.log(result)
+```
+
 Note you can use REST API or command line from current surrealdb.
 
-
+## database set up SQL:
 SQL scripts
 
 ```sql
-CREATE user SET children = null;
+CREATE user;
 ```
-  Needed for signup else it will error if not exist.
+	This not need as long user table is set up.
+
+If the database is started you can used the command line.
+```
+surreal sql --conn http://localhost:8000 --user root --pass root --ns test --db test
+```
+	This is for SQL command query or SurrealQL. It can be found in doc.
+  
 
 ```sql
 DEFINE TABLE user SCHEMALESS

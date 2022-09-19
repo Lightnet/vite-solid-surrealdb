@@ -5,6 +5,10 @@
 */
 
 import "./styles.css";
+// https://github.com/vitejs/vite/discussions/2785
+//import * as Buffer from 'buffer-esm'
+//import { Buffer as BufferPolyfill } from 'buffer'
+//window.Buffer = BufferPolyfill;
 
 import { 
  lazy

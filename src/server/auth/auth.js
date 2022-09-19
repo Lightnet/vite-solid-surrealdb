@@ -20,14 +20,34 @@ router.post('/login', async (req, res) => {
   }
   try {
     let db = await getDB();
-    let token = await db.signin({
+    // note that need another Instance as it overlap the login from server root else account can view other users
+    await Surreal.Instance.connect('http://localhost:8000/rpc');
+    await Surreal.Instance.use("test", "test");
+    
+    let surrealToken = await Surreal.Instance.signin({
       NS: 'test',
       DB: 'test',
       SC: 'allusers',
       email: alias +'@surrealdb.test',
       pass: passphrase,
     });
-    
+    await Surreal.Instance.close()//close connect since were doing getting access
+    let token = "Test"
+
+    let query = await db.query(`SELECT * FROM user`);
+    console.log("query users")
+    console.log(query)
+
+    let users = await db.query(`SELECT * FROM user WHERE email = $email`,{
+      email: alias +'@surrealdb.test',
+    });
+
+    console.log("users")
+    console.log(users)
+    console.log(users[0].result[0])
+
+
+
     console.log(token)
     res.send(JSON.stringify({api:'TOKEN',token:token}))
     return;

@@ -37,7 +37,7 @@ async function fetchQuerySQL(query){
 }
 
 async function setUpDatahbase(_db){
-	console.log("init db...")
+	//console.log("init db...")
 let result;
 let query = `
 DEFINE TABLE user SCHEMALESS
@@ -47,7 +47,7 @@ DEFINE TABLE user SCHEMALESS
 DEFINE INDEX idx_email ON user COLUMNS email UNIQUE;
 `;
 let data = await fetchQuerySQL(query)
-console.log("DEFINE TABLE user SCHEMALESS")
+//console.log("DEFINE TABLE user SCHEMALESS")
 //console.log(data)
 
 query = `
@@ -58,7 +58,7 @@ DEFINE SCOPE allusers
 `;
 data = await fetchQuerySQL(query)
 
-console.log("DEFINE SCOPE allusers")
+//console.log("DEFINE SCOPE allusers")
 //console.log(data)
 
 //result = await _db.query('INFO FOR DB;');

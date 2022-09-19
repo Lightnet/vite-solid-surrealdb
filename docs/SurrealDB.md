@@ -6,6 +6,65 @@ https://surrealdb.com/docs/integration/libraries/javascript
 surreal start --log debug --user root --pass root memory
 ```
 
+- https://surrealdb.com/features
+
+```sql
+-- Enable scope authentication directly in SurrealDB
+DEFINE SCOPE account SESSION 24h
+	SIGNUP ( CREATE user SET email = $email, pass = crypto::argon2::generate($pass) )
+	SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
+;
+```
+
+```js
+// Signin and retrieve a JSON Web Token
+let jwt = fetch('https://api.surrealdb.com/signup', {
+	method: 'POST',
+	headers: {
+		'Content-Type': 'application/json',
+		'NS': 'google', // Specify the namespace
+		'DB': 'gmail', // Specify the database
+    },
+	body: JSON.stringify({
+		email: 'tobie@surrealdb.com',
+		pass: 'a85b19*1@jnta0$b&!'
+	}),
+});
+```
+
+```sql
+-- Specify access permissions for the 'post' table
+DEFINE TABLE post SCHEMALESS
+	PERMISSIONS
+		FOR select
+			-- Published posts can be selected
+			WHERE published = true
+			-- A user can select all their own posts
+			OR user = $auth.id
+		FOR create, update
+			-- A user can create or update their own posts
+			WHERE user = $auth.id
+		FOR delete
+			-- A user can delete their own posts
+			WHERE user = $auth.id
+			-- Or an admin can delete any posts
+			OR $auth.admin = true
+;
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ```js
 import Surreal from 'surrealdb.js';
@@ -79,7 +138,7 @@ password:root
 
 
 Body > Text > Text Content
-```
+```sql
 CREATE human CONTENT {
    nickname: "test",
    age: "99", 
