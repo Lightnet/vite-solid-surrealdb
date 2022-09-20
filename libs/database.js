@@ -5,7 +5,7 @@
 */
 
 import Surreal from 'surrealdb.js';
-import fetch from 'node-fetch';
+import nodefetch from 'node-fetch';
 
 /*
 ./surreal start --log debug --user root --pass root memory
@@ -22,7 +22,7 @@ function textToBase64(params){
 // this is for DEFINE set up as surreal.query() does not work for some reason.
 // https://surrealdb.com/docs/integration/libraries/nodejs#query
 async function fetchQuerySQL(query){
-	let response = await fetch('http://localhost:8000/sql',{
+	let response = await nodefetch('http://localhost:8000/sql',{
 		method:'POST',
 		headers:{
 			"Authorization": 'Basic ' + textToBase64('root'+':'+'root') ,
@@ -50,10 +50,17 @@ let data = await fetchQuerySQL(query)
 //console.log("DEFINE TABLE user SCHEMALESS")
 //console.log(data)
 
+//query = `
+//DEFINE SCOPE allusers
+//	SESSION 14d
+//	SIGNUP ( CREATE user SET settings.marketing = $marketing, email = $email, pass = crypto::argon2::generate($pass), tags = $tags )
+//	SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
+//`;
+
 query = `
 DEFINE SCOPE allusers
 	SESSION 14d
-	SIGNUP ( CREATE user SET settings.marketing = $marketing, email = $email, pass = crypto::argon2::generate($pass), tags = $tags )
+	SIGNUP ( CREATE user SET email = $email, pass = crypto::argon2::generate($pass) )
 	SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
 `;
 data = await fetchQuerySQL(query)
@@ -94,10 +101,7 @@ async function getDB(){
 
 		//let result = await db.query('CREATE user;');
 		//console.log(result)
-
-
-
-
+		
 		return db;
 	}
 }

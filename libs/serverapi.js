@@ -40,7 +40,6 @@ const replaceSpecialChars = b64string => {
   });
 };
 
-
 export function createJWT(_data, _secret){
   const json_header = { "alg": "HS256", "typ": "JWT" };
   const jwtheader = JsonToBase64url(json_header);
@@ -79,7 +78,3 @@ export function verifyToken(_token, _secret){
     return null;
   }
 }
-
-
-
-

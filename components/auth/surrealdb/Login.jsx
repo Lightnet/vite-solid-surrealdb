@@ -13,9 +13,12 @@
 import { Link, useNavigate } from '@solidjs/router'
 import { createEffect, createSignal } from 'solid-js'
 //import { useAuth } from './AuthProvider'
-//import Surreal from 'surrealdb.js'
-import { SurrealDB } from 'surrealdb'
-//import { Buffer } from 'buffer';
+import SurrealDB from 'surrealdb.js'
+//import SurrealDB from 'https://unpkg.com/surrealdb@0.0.1-beta.3.5/lib/src/index.js'
+
+console.log(SurrealDB)
+
+//import SurrealDB from '../../../libs/surrealdbclient'
 
 export default function Login() {
 
@@ -26,6 +29,8 @@ export default function Login() {
   const [passphrase, setPassphrase] = createSignal('pass')
   const [email, setEmail] = createSignal('test@test.test')
 
+  const db = new SurrealDB('http://localhost:8000/rpc');
+
   //console.log(Buffer)
   //const [,{setToken}] = useAuth();
   //console.log(Buffer)
@@ -35,11 +40,54 @@ export default function Login() {
   function textToBase64(params){
     return btoa(params);//note it think of nodejs in vscode IDE, this is brower api
   }
-
+/*
+  const db = new SurrealDB('http://localhost:8000',{
+        NS:"test",
+        DB:"test",
+        user: email(),
+        pass: passphrase()
+      })
+*/
   const btnLogin = async (e)=>{
     console.log(alias())
     console.log(passphrase())
     try{
+      //db.signIn()
+      
+      console.log(db)
+
+      let token = await db.signin({
+        DB: 'test',
+        NS: 'test',
+        SC: 'allusers',
+        email: 'test@test.test',
+        pass: 'pass'
+      })
+
+      console.log(token)
+      //db.token(token)
+      console.log(db)
+
+      let result;
+
+      //await db.use('test','test')
+
+      //result = await db.create('message',{
+        //content: "hello world!",
+        //marketing: true,
+			  //identifier: Math.random().toString(36).substr(2, 10),
+      //});
+
+      //console.log(result)
+
+      //result = await db.query(`CREATE message SET content = "hello world!"`);
+      //console.log(result)
+
+      //result = await db.query('SELECT * FROM message;');
+      //console.log(result)
+
+      //result = await db.select("message");
+      //console.log(result)
 
       /*
       let query = "CREATE user;"
@@ -84,8 +132,52 @@ export default function Login() {
     }
   }
 
-  const btnSignUp = (e)=>{
-    navigate("/signup", { replace: true })
+  const btnSignUp = async (e)=>{
+    //navigate("/signup", { replace: true })
+    try{
+      console.log("SIGN UP")
+      let token = await db.signup({
+        DB: 'test',
+        NS: 'test',
+        SC: 'allusers',
+        email: 'test@test.test',
+        pass: 'pass'
+      })
+      //db.signUp();
+    }catch(e){
+      console.log(e)
+    }
+
+  }
+
+  async function clickQuery(){
+    let result;
+
+      await db.use('test','test')
+
+      //result = await db.create('message',{
+        //content: "hello world!",
+        //marketing: true,
+			  //identifier: Math.random().toString(36).substr(2, 10),
+      //});
+
+      //console.log(result)
+
+      //result = await db.query(`CREATE message SET content = "hello world!"`);
+      //console.log(result)
+
+      result = await db.query('SELECT * FROM message;');
+      console.log(result)
+
+      //result = await db.select("message");
+      //console.log(result)
+  }
+
+  async function  clickCreate(){
+    await db.use('test','test')
+    let result;
+    result = await db.query(`CREATE message SET content = "hello world!"`);
+    console.log(result)
   }
 
   return (
@@ -99,6 +191,8 @@ export default function Login() {
       <label> Passphrase: </label><input value={passphrase()} onInput={(e)=>setPassphrase(e.target.value)} /><br/>
       <button onClick={btnSignUp}> Sign Up </button>
       <button onClick={btnLogin}> Login </button>
+      <button onClick={clickQuery}> clickQuery </button>
+      <button onClick={clickCreate}> clickCreate </button>
     </div>
   )
 }

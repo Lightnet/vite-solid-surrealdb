@@ -16,19 +16,59 @@ const __dirname = dirname(__filename);
 import { createServer as createViteServer } from 'vite'
 //import routeAPI from  "./src/server/api.js"
 //import * as vite from 'vite'
-
-//import routeAPI from  "./src/server/api.js"
+import cors from "cors"
+import routeAPI from  "./src/server/api.js"
 //import { getDB } from "./libs/database.js"
 //let db;
 
 console.log("script server.js")
 
+//CORS middleware
+var allowCrossDomain = function(req, res, next) {
+  //res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+  next();
+}
+
+const allowedOrigins = [
+  'http://localhost:8000'
+, 'http://localhost:3000'
+, 'http://127.0.0.1:8000'
+]
+// https://expressjs.com/en/resources/middleware/cors.html#configuring-cors
 async function createServer() {
 
   //main();
   //db = await getDB();
 
   const app = express()
+  app.use(cors({
+    //origin: ['http://localhost:3000/', 'http://localhost:8000/'],
+    origin: function(origin, callback){
+      //console.log(origin)
+      // allow requests with no origin 
+      // (like mobile apps or curl requests)
+      if(!origin) return callback(null, true);
+      if(allowedOrigins.indexOf(origin) === -1){
+        var msg = 'The CORS policy for this site does not ' +
+                  'allow access from the specified Origin.';
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+    allowedHeaders:['Content-Type', 'Authorization'],
+    "preflightContinue": false,
+    //methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
+    //origin: '*',
+    //credentials: false, 
+    credentials: true, 
+    //origin: false,
+    //optionsSuccessStatus: 200
+  }))
+  //app.use(allowCrossDomain);
+
   app.use(express.json());
 
   // Create Vite server in middleware mode
@@ -40,7 +80,7 @@ async function createServer() {
   // Use vite's connect instance as middleware
   app.use(vite.middlewares)
 
-  //app.use('/api',routeAPI);
+  app.use('/api',routeAPI);
 
   app.use('*',async (req, res) => {
     const url = req.originalUrl

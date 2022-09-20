@@ -29,6 +29,7 @@ const IndexMenus = () => {
     "/signup",
     "/signout",
     "/testlab",
+    "/surrealdb",
   ];
 
   const displayMenu = createMemo(()=>{
@@ -45,6 +46,7 @@ const IndexMenus = () => {
         <Link class="btnLink" href="/">Home</Link><span> | </span>
         <Link class="btnLink" href="/about">About</Link><span> | </span>
         <Link class="btnLink" href="/testlab">Test Lab</Link><span> | </span>
+        <Link class="btnLink" href="/surrealdb">SurrealDB</Link><span> | </span>
         <ToggleTheme />
         </div>)
     }else{

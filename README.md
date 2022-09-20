@@ -1,7 +1,7 @@
 # vite-solid-surrealdb
 
 # Status
-- prototype
+- prototype /unstable
 - testing / learning ...
 
 # Programs:
@@ -20,7 +20,7 @@
 
 # Database:
 
-	SurrealDB build on rust language. There is no UI that not yet release. Since SurrealDB server running. It can used http Rest API query, SQL script, websocket and command line.
+	SurrealDB build on rust language. There is no UI that not yet release. Since SurrealDB run by command line to start server. It can used http Rest API query, SQL script, websocket and command line.
 
  SurrealDB has couple of way of handle database for json, doc, strict schemafull and schemaless table. 
  
@@ -112,7 +112,7 @@ main();
 
  Note there websocket but there no docs added to learn it.
 
- Added simple script from searching community.
+ Added simple script from searching community posts.
 
  You can read more on the docs on their site.
 
@@ -147,104 +147,3 @@ surreal start --log debug --user root --pass root memory
 ./surreal start --log debug --user root --pass root memory
 ```
 memory = does not store just tmp ram store
-
-## database query and access:
-
-	The surreal app needs to be run to run surrealql / sql script.
-
-  Note below this section are guide on trouble shooting. There is script check if user count is zero to set up database first time.
-
-- https://surrealdb.com/docs/start
-
-### command line rest api
-```command line
-DATA="INFO FOR DB;"
-curl --request POST \
-	--header "Content-Type: application/json" \
-	--user "root:root" \
-	--data "${DATA}" \
-	http://localhost:8000/sql
-```
-
-### client rest api
-```js
-let query = 'INFO FOR DB;'
-let response = await fetch('http://localhost:8000/sql',{
-		method:'POST',
-		headers:{
-			"Authorization": 'Basic ' + textToBase64('root'+':'+'root') ,
-			"NS": "test",
-			"DB": "test",
-			"Content-Type":"application/json"
-		},
-		body:query
-	})
-	let data = await response.json();
-```
-
-### server api
-```js
-import SurrealDB from 'surrealdb'
-const db = new SurrealDB('http://127.0.0.1:8000', {
-	user: 'root',
-	pass: 'root',
-	database: 'test',
-	namespace: 'test',
-});
-console.log(db)
-
-//let result = await db.Query('SELECT * FROM user;')
-//let result = await db.Query('select *  from person;')
-//console.log(result)
-```
-
-Note you can use REST API or command line from current surrealdb.
-
-### database set up SQL:
-SQL scripts
-
-```sql
-CREATE user;
-```
-	This not need as long user table is set up.
-
-If the database is started you can used the command line for query SurrealQL.
-```
-surreal sql --conn http://localhost:8000 --user root --pass root --ns test --db test
-```
-	This is for SQL command query or SurrealQL. It can be found in doc.
-
-- https://surrealdb.com/docs/cli/sql
-  
-
-```sql
-DEFINE TABLE user SCHEMALESS
-  PERMISSIONS
-    FOR select, update WHERE id = $auth.id, 
-    FOR create, delete NONE;
-DEFINE INDEX idx_email ON user COLUMNS email UNIQUE;
-```
-	This deal with duplicate email that it must be UNIQUE. As well set up user account.
-
-```sql
-DEFINE SCOPE allusers
-SESSION 14d
-SIGNUP ( CREATE user SET settings.marketing = $marketing, email = $email, pass = crypto::argon2::generate($pass), tags = $tags )
-SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
-```
-
-Reason for this DEFINE SCOPE for signup params.
-
-```js
-const Surreal = require('surrealdb.js');
-const db = new Surreal('http://127.0.0.1:8000/rpc');
-let token = await db.signup({
-  NS: 'test',
-  DB: 'test',
-  SC: 'allusers', // DEFINE SCOPE allusers
-  email: alias +'@surrealdb.test',
-  pass: passphrase,
-  marketing: true,
-  tags: ['rust', 'golang', 'javascript'], // We can add any variable here to use in the SIGNUP clause
-});
-```

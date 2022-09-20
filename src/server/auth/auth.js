@@ -7,31 +7,37 @@
 import Surreal from 'surrealdb.js'
 import {Router} from 'express'
 import { getDB } from '../../../libs/database.js'
+import { isEmpty } from '../../../libs/helper.js'
 
 const router = Router()
 
 router.post('/login', async (req, res) => {
   res.set('Content-Type', 'application/json');
   console.log(req.body)
-  const {alias, passphrase} = req.body;
-  if(!alias || !passphrase){
+  const {email, passphrase} = req.body;
+  console.log(isEmpty(email))
+  if(isEmpty(email) == true || isEmpty(passphrase) == true){
     res.send(JSON.stringify({api:'EMPTY'}))
     return;
   }
   try {
+    console.log("process?")
     let db = await getDB();
     // note that need another Instance as it overlap the login from server root else account can view other users
     await Surreal.Instance.connect('http://localhost:8000/rpc');
     await Surreal.Instance.use("test", "test");
+
+    console.log(email);
     
     let surrealToken = await Surreal.Instance.signin({
       NS: 'test',
       DB: 'test',
       SC: 'allusers',
-      email: alias +'@surrealdb.test',
+      email: email,
       pass: passphrase,
     });
     await Surreal.Instance.close()//close connect since were doing getting access
+    /*
     let token = "Test"
 
     let query = await db.query(`SELECT * FROM user`);
@@ -45,11 +51,9 @@ router.post('/login', async (req, res) => {
     console.log("users")
     console.log(users)
     console.log(users[0].result[0])
-
-
-
-    console.log(token)
-    res.send(JSON.stringify({api:'TOKEN',token:token}))
+    */
+    console.log(surrealToken)
+    res.send(JSON.stringify({api:'TOKEN',token:surrealToken}))
     return;
     
   } catch (error) {
@@ -65,9 +69,9 @@ router.post('/login', async (req, res) => {
 router.post('/signup', async (req, res) => {
   res.set('Content-Type', 'application/json');
   console.log(req.body)
-  const {alias, passphrase} = req.body;
+  const {email, passphrase} = req.body;
 
-  if(!alias || !passphrase){
+  if(!email || !passphrase){
     res.send(JSON.stringify({api:'EMPTY'}))
     return;
   }
@@ -79,7 +83,7 @@ router.post('/signup', async (req, res) => {
       DB: 'test',
       SC: 'allusers',
       //email: 'info@surrealdb.com',
-      email: alias +'@surrealdb.test',
+      email: email,
       //user:alias,
       //email:alias + '@test.com',
       pass: passphrase,

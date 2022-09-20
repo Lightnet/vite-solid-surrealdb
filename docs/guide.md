@@ -78,4 +78,131 @@ SIGNIN (
 ```
 
 
+https://discord.com/channels/902568124350599239/970336107206176768/1021171970118795356
 
+
+If authenticating as a NAMESPACE user...
+```
+USE NS test;
+DEFINE LOGIN my_login ON NAMESPACE PASSWORD '123456';
+
+db.signin({
+  NS: 'test',
+  user: 'my_login',
+  pass: '123456',
+});
+```
+
+
+```
+USE NS test DB test;
+DEFINE LOGIN my_login ON DATABASE PASSWORD '123456';
+
+
+db.signin({
+  NS: 'test',
+  DB: 'test',
+  user: 'my_login',
+  pass: '123456',
+});
+```
+
+If authenticating as a SCOPE user...
+```
+USE NS test DB test;
+DEFINE SCOPE allusers SESSION 24h
+  SIGNUP ( CREATE user SET email = $email, pass = crypto::argon2::generate($pass) )
+  SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
+;
+```
+```
+db.signup({
+  NS: 'test',
+  DB: 'test',
+  SC: 'mu_scope',
+  email: 'me@acme.com',
+  pass: '123456',
+  interests: ['my', 'hobbies'],
+});
+db.signin({
+  NS: 'test',
+  DB: 'test',
+  SC: 'mu_scope',
+  email: 'me@acme.com',
+  pass: '123456',
+});
+```
+```js
+let jwt = await fetch(`http://localhost:8000/signup`, {
+	method: 'POST',
+	mode: 'no-cors',
+	//credentials:"omit",
+	headers: {
+		'Content-Type': 'application/json',
+		'NS': 'test', // Specify the namespace
+		'DB': 'test', // Specify the database
+		'SC': 'allusers' // Specify the scope
+	},
+	body: JSON.stringify({
+		NS: 'test',
+		DB: 'test',
+		SC:'allusers',
+		email: 'test2@test.test',
+		pass: 'pass'
+	}),
+})
+```
+	Note error check if signup again there no feedback on fail.
+
+	Note that dev fetch does not work for some reason.
+```
+
+```
+
+# browser client
+```
+Surreal
+-constructor
+-static get Instance()
+-static get AuthenticationError()
+-static get PermissionError()
+-static get RecordError()
+-static get Live()
+-connect(url)
+-
+-sync(query, vars)
+-wait()
+-close()
+-ping()
+-use(ns, db)
+-info()
+-signup(vars)
+-signin(vars) 
+-invalidate()
+-authenticate(token)
+-live(table)
+-kill(query) 
+-let(key, val)
+-query(query, vars)
+-select(thing)
+-create(thing, data)
+-update(thing, data)
+-change(thing, data)
+- modify(thing, data)
+- delete(thing)
+
+```
+
+
+```
+USE NS test DB test;
+DEFINE TABLE message SCHEMALESS
+  PERMISSIONS
+    FOR select, create NONE;
+```
+
+```
+USE NS test DB test;
+DEFINE TABLE message DROP;
+SELECT * FROM message;
+```
