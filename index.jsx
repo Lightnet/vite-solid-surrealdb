@@ -1,14 +1,10 @@
 /*
-  Project Name: vite-solid-surrealdb
+  Project Name: solid-sandbox
   License: MIT
   Created by: Lightnet
 */
 
 import "./styles.css";
-// https://github.com/vitejs/vite/discussions/2785
-//import * as Buffer from 'buffer-esm'
-//import { Buffer as BufferPolyfill } from 'buffer'
-//window.Buffer = BufferPolyfill;
 
 import { 
  lazy
@@ -17,17 +13,15 @@ import {
 import { MetaProvider } from 'solid-meta';
 import { createApp } from 'solid-utils';
 import { Router, useRoutes } from '@solidjs/router';
-//import ThemeProvider from "./components/theme/ThemeProvider";
+import ThemeProvider from "./components/theme/ThemeProvider";
 import IndexMenus from "./components/IndexMenus";
 //import Home from './pages/index.jsx';
 import AuthProvider from "./components/auth/AuthProvider";
-//import { AuthProvider } from "./components/auth/api/AuthProvider";
 
 const routes = [
   {
     path: '/',
     component: lazy(() => import('./pages/index')),
-    //component: Home,
   },
   {
     path: '/about',
@@ -53,13 +47,15 @@ const routes = [
 
 const App = () => {
   const Route = useRoutes(routes);
-
-  return (<>
-  <AuthProvider>
-    <IndexMenus/>
-    <Route />
-  </AuthProvider>
-  </>);
+  //<ThemeProvider>
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <IndexMenus/>
+        <Route />
+      </AuthProvider>
+    </ThemeProvider>
+  );
 };
 
 const dispose = createApp(App).use(MetaProvider).use(Router).mount('#app');

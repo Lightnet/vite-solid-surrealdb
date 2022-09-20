@@ -26,8 +26,8 @@ let jwt = fetch('https://api.surrealdb.com/signup', {
 		'DB': 'gmail', // Specify the database
     },
 	body: JSON.stringify({
-		email: 'tobie@surrealdb.com',
-		pass: 'a85b19*1@jnta0$b&!'
+		email: 'test@test.test',
+		pass: 'root'
 	}),
 });
 ```

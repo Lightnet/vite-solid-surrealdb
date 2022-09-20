@@ -4,7 +4,12 @@
   Created by: Lightnet
 */
 
-import { createContext, createEffect, createSignal, useContext } from 'solid-js'
+import { 
+  createContext
+, createEffect
+, createSignal
+, useContext
+} from 'solid-js'
 
 
 export const AuthContext = createContext();
@@ -15,12 +20,15 @@ export default function AuthProvider(props){
 
   const [session, setSession] = createSignal(props.session || null);
   const [token, setToken] = createSignal(props.token || null);
+  const [clientDB, setClientDB] = createSignal(props.clientDB || null);
 
   const value = [
       session,
       {
         token:token,
         setToken:setToken,
+        clientDB:clientDB,
+        setClientDB:setClientDB,
         setSession: setSession,
         AssignSession(data) {
           setSession(data);

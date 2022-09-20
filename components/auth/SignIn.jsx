@@ -30,7 +30,8 @@ export default function SignIn() {
         },
         body:JSON.stringify({
           alias:alias(),
-          passphrase:passphrase()
+          passphrase:passphrase(),
+          email:email()
         })
       })
       const data = await resp.json()
@@ -54,6 +55,7 @@ export default function SignIn() {
     <div>
       <label>Sign In</label><br/>
       <label> Alias: </label><input value={alias()} onInput={(e)=>setAlias(e.target.value)}/><br/>
+      <label> E-Mail: </label><input value={email()} onInput={(e)=>setEmail(e.target.value)}/><br/>
       <label> Passphrase: </label><input value={passphrase()} onInput={(e)=>setPassphrase(e.target.value)} /><br/>
       <button onClick={btnSignUp}> Sign Up </button>
       <button onClick={btnLogin}> Login </button>

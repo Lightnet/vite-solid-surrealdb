@@ -17,16 +17,16 @@ import { createServer as createViteServer } from 'vite'
 //import routeAPI from  "./src/server/api.js"
 //import * as vite from 'vite'
 
-import routeAPI from  "./src/server/api.js"
-import { getDB } from "./libs/database.js"
-let db;
+//import routeAPI from  "./src/server/api.js"
+//import { getDB } from "./libs/database.js"
+//let db;
 
 console.log("script server.js")
 
 async function createServer() {
 
   //main();
-  db = await getDB();
+  //db = await getDB();
 
   const app = express()
   app.use(express.json());
@@ -40,7 +40,7 @@ async function createServer() {
   // Use vite's connect instance as middleware
   app.use(vite.middlewares)
 
-  app.use('/api',routeAPI);
+  //app.use('/api',routeAPI);
 
   app.use('*',async (req, res) => {
     const url = req.originalUrl

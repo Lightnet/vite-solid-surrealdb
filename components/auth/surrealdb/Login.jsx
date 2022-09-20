@@ -14,7 +14,7 @@ import { Link, useNavigate } from '@solidjs/router'
 import { createEffect, createSignal } from 'solid-js'
 //import { useAuth } from './AuthProvider'
 //import Surreal from 'surrealdb.js'
-import SurrealDB from 'surrealdb'
+import { SurrealDB } from 'surrealdb'
 //import { Buffer } from 'buffer';
 
 export default function Login() {
@@ -24,10 +24,9 @@ export default function Login() {
   const [scope, seStcope] = createSignal('allusers')
   const [alias, setAlias] = createSignal('test')
   const [passphrase, setPassphrase] = createSignal('pass')
-  const [email, setEmail] = createSignal('pass')
+  const [email, setEmail] = createSignal('test@test.test')
 
   //console.log(Buffer)
-
   //const [,{setToken}] = useAuth();
   //console.log(Buffer)
 
@@ -62,18 +61,22 @@ export default function Login() {
       console.log(data)
       */
 
+      //const db = new SurrealDB('http://127.0.0.1:8000', {user: 'root',pass: 'root',database: 'test',namespace: 'test',});
+      /*
       const db = new SurrealDB('http://127.0.0.1:8000', {
-        user: 'root',
-        pass: 'root',
         database: 'test',
         namespace: 'test',
+        //user: alias(),
+        user: email(),
+        pass: passphrase()
       });
+      
       console.log(db)
 
       //let result = await db.Query('SELECT * FROM user;')
       let result = await db.Query('select *  from person;')
       console.log(result)
-
+      */
 
       
     }catch(e){

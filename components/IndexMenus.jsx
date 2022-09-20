@@ -12,11 +12,13 @@ import {
 } from 'solid-js';
 
 import { Link, useLocation } from '@solidjs/router';
-//import ToggleTheme from './theme/ToggleTheme';
+//import { Link, useLocation } from 'solid-app-router';
+import ToggleTheme from './theme/ToggleTheme';
 
 const IndexMenus = () => {
   
   const location = useLocation();
+  //console.log(location)
   const pathname = createMemo(() => location.pathname);
 
   //for menu display
@@ -35,6 +37,7 @@ const IndexMenus = () => {
     //}))
     if(
       whitelist.find((item)=>{return item === pathname()})
+      //true
     ){
       //console.log("FOUND")
       // <ToggleTheme /> //does not work here layer?
@@ -42,6 +45,7 @@ const IndexMenus = () => {
         <Link class="btnLink" href="/">Home</Link><span> | </span>
         <Link class="btnLink" href="/about">About</Link><span> | </span>
         <Link class="btnLink" href="/testlab">Test Lab</Link><span> | </span>
+        <ToggleTheme />
         </div>)
     }else{
       //console.log("NOT FOUND")
@@ -49,6 +53,7 @@ const IndexMenus = () => {
       </>)
     }
   })
+  
 
   return (<>
   {displayMenu}
