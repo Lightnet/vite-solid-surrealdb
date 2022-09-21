@@ -164,20 +164,20 @@ query = `INFO FOR DB;`
 data = await fetchQuerySQL(query)
 //console.log(data)
 
-//let signToken = await signUp({
+let signToken = await signUp({
   //email:'test4',
   //pass:'test'
-//})
-//console.log(signToken)
+})
+console.log(signToken)
 
 
-let token = await signIn({
+//let token = await signIn({
   //email:'test3',
   //pass:'test'
-});
-console.log("//=== token ===//")
-console.log(token)
-console.log("//=== token ===//")
+//});
+//console.log("//=== token ===//")
+//console.log(token)
+//console.log("//=== token ===//")
 
 //query = `INFO FOR DB;` //not allow for users register testing.
 //data = await tokenQuerySQL(token, query)
@@ -187,14 +187,14 @@ console.log("//=== token ===//")
 //data = await tokenQuerySQL(token, query)
 //console.log(data)
 
-query = `SELECT * FROM message;`
-data = await tokenQuerySQL(token, query)
-console.log("MESSAGE")
-console.log(data)
+//query = `SELECT * FROM message;`
+//data = await tokenQuerySQL(token, query)
+//console.log("MESSAGE")
+//console.log(data)
 
-if(data[0].result){
-  console.log(data[0].result);
-}
+//if(data[0].result){
+  //console.log(data[0].result);
+//}
 
 }
 

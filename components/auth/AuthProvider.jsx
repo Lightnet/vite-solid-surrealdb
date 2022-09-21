@@ -10,7 +10,7 @@ import {
 , createSignal
 , useContext
 } from 'solid-js'
-
+import SurrealDB from 'surrealdb.js'
 
 export const AuthContext = createContext();
 
@@ -22,22 +22,25 @@ export default function AuthProvider(props){
   const [token, setToken] = createSignal(props.token || null);
   const [clientDB, setClientDB] = createSignal(props.clientDB || null);
 
+  const db = new SurrealDB('http://localhost:8000/rpc');
+  setClientDB(db)
+
   const value = [
-      session,
-      {
-        token:token,
-        setToken:setToken,
-        clientDB:clientDB,
-        setClientDB:setClientDB,
-        setSession: setSession,
-        AssignSession(data) {
-          setSession(data);
-        },
-        clearSession() {
-          setSession(null);
-        }
+    session,
+    {
+      token:token,
+      setToken:setToken,
+      clientDB:clientDB,
+      setClientDB:setClientDB,
+      setSession: setSession,
+      AssignSession(data) {
+        setSession(data);
+      },
+      clearSession() {
+        setSession(null);
       }
-    ];
+    }
+  ];
   //watch data
   createEffect(() => {    
     console.log(token())

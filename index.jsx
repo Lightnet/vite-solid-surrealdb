@@ -29,15 +29,15 @@ const routes = [
   },
   {
     path: '/signup',
-    component: lazy(() => import('./components/auth/SignUp')),
+    component: lazy(() => import('./components/auth/surrealdb/SignUp')),
   },
   {
     path: '/signin',
-    component: lazy(() => import('./components/auth/SignIn')),
+    component: lazy(() => import('./components/auth/surrealdb/SignIn')),
   },
   {
     path: '/signout',
-    component: lazy(() => import('./components/auth/SignOut')),
+    component: lazy(() => import('./components/auth/surrealdb/SignOut')),
   },
   {
     path: '/testlab',

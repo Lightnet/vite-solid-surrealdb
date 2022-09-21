@@ -18,8 +18,6 @@ import SurrealDB from 'surrealdb.js'
 
 console.log(SurrealDB)
 
-//import SurrealDB from '../../../libs/surrealdbclient'
-
 export default function Login() {
 
   const [nameSpace, setNameSpace] = createSignal('test')
@@ -125,8 +123,7 @@ export default function Login() {
       let result = await db.Query('select *  from person;')
       console.log(result)
       */
-
-      
+     
     }catch(e){
       console.log(e)
     }

@@ -8,15 +8,13 @@
 - Nodejs 16.17.0
 - SurrealDB 1.0.0 beta 7
 
-
 # Information:
 
  Using the vite and solid js package with nodejs to run http server web.
 
- The SurrealDB is currently in beta build. The api may change depend users working on the stable.
+ The SurrealDB is currently in beta build. The api may change depend users working on the stable version.
 
- To develop and test how chat message work with permission as well develop simple game. One reason is reduce call from the server web http and go to directly to Surreal database with permission and authority logic.
-
+ To develop and test how chat message work with permission as well develop simple message. One reason is reduce call from the server web http and go to directly to Surreal database with permission and authority logic.
 
 # Database:
 
@@ -42,8 +40,7 @@ SIGNUP ( CREATE user SET settings.marketing = $marketing, email = $email, pass =
 SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
 ```
 
-
- There are two or more ways of doing things to connect to the Surreal database. One is server, client, command line, http rest api call and websocket. The fetch post work for javascript client for REST API for SurrealQL.
+ There are two or more ways of doing things to connect to the SurrealDB database. One is server, client, command line, http rest api call and websocket. The fetch post work for javascript client for REST API for SurrealQL.
 
 ```command line
 DATA="INFO FOR DB;"
@@ -98,7 +95,7 @@ const db = new SurrealDB('http://127.0.0.1:8000', {
 	database: 'test',
 	namespace: 'test',
 	//user: alias(),
-	user: email(),
+	email: email(),
 	pass: passphrase()
 });
 console.log(db)
@@ -146,4 +143,11 @@ surreal start --log debug --user root --pass root memory
 ```
 ./surreal start --log debug --user root --pass root memory
 ```
-memory = does not store just tmp ram store
+memory = does not store just tmp ram store.
+
+# DB Events:
+	As read the docs for trigger event. It is possible to create proxy fetch logic to call out to send out data. Since the SQL has javascript ESM format code support. But not tested for email send on nodejs or deno or bun web server.
+
+# Credits:
+ - SurrealDB discord
+ - 

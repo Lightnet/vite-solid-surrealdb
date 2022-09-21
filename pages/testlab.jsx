@@ -6,7 +6,8 @@
 
 import { Link } from '@solidjs/router'
 import { createEffect } from 'solid-js'
-import Login from '../components/auth/surrealdb/Login'
+import Login from '../components/auth/surrealdb/TestSQL.jsx'
+import UserQuery from '../components/auth/surrealdb/UserQuery.jsx'
 //import { useAuth } from '../components/auth/AuthProvider';
 
 export default function PageIndex() {
@@ -15,6 +16,7 @@ export default function PageIndex() {
 
   return (
     <div>
+      <UserQuery/>
       <Login/>
     </div>
   )
