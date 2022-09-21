@@ -146,7 +146,41 @@ surreal start --log debug --user root --pass root memory
 memory = does not store just tmp ram store.
 
 # DB Events:
-	As read the docs for trigger event. It is possible to create proxy fetch logic to call out to send out data. Since the SQL has javascript ESM format code support. But not tested for email send on nodejs or deno or bun web server.
+	As read the docs for trigger event. It is possible to create fetch logic to call out to send out data. Since the SQL has javascript ESM format code support.
+
+## events:
+- CREATE
+- UPDATE
+- DELETE
+
+```sql
+DEFINE EVENT @name ON TABLE @name:id WHEN @condition(s) THEN (
+	@dosomething
+);
+
+```
+ - https://surrealdb.com/docs/surrealql/statements/define
+
+```sql
+DEFINE EVENT change_alias ON TABLE user WHEN $before.alias != $after.alias THEN (
+	CREATE event SET user = $this, time = time::now(), value = $after.alias, action = 'alias_changed'
+);
+```
+	This log event table.
+
+
+```sql
+DEFINE EVENT fetch_alias ON TABLE user WHEN $event = "UPDATE" AND $after.alias THEN
+	http::post('http://localhost:3000/api/user', { action: $event, data: $this })
+;
+```
+ - https://surrealdb.com/docs/surrealql/functions/http#post
+##
+```
+http::post('http://localhost:3000/apideleted', $before.email)
+http::post('http://localhost:3000/api', { action: $event, data: $this })
+```
+	It is possible use proxy for handle email, token, and other things dev for api to custom events.
 
 # Credits:
  - SurrealDB discord

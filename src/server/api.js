@@ -3,7 +3,7 @@
   License: MIT
   Created by: Lightnet
 */
-
+console.log("init api...")
 import {Router} from 'express'
 import { getDB } from '../../libs/database.js'
 import auth from "./auth/auth.js"
@@ -21,6 +21,11 @@ router.get('/db', async (req, res) => {
   let db = await getDB()
   console.log(db)
   res.send('db')
+})
+
+router.post('/user', (req, res) => {
+  console.log(req.body)
+  res.send('echo')
 })
 
 export default router;

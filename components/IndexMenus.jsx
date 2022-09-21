@@ -5,10 +5,7 @@
 */
 
 import { 
-  createSignal
-, createMemo
-, createEffect 
-, onCleanup
+  createMemo
 } from 'solid-js';
 
 import { Link, useLocation } from '@solidjs/router';
@@ -25,11 +22,13 @@ const IndexMenus = () => {
   let whitelist = [
     "/",
     "/about",
+    "/account",
     "/signin",
     "/signup",
     "/signout",
     "/testlab",
     "/surrealdb",
+    "/todolist",
   ];
 
   const displayMenu = createMemo(()=>{
@@ -45,8 +44,10 @@ const IndexMenus = () => {
       return ( <div>
         <Link class="btnLink" href="/">Home</Link><span> | </span>
         <Link class="btnLink" href="/about">About</Link><span> | </span>
+        <Link class="btnLink" href="/account">Account</Link><span> | </span>
         <Link class="btnLink" href="/testlab">Test Lab</Link><span> | </span>
         <Link class="btnLink" href="/surrealdb">SurrealDB</Link><span> | </span>
+        <Link class="btnLink" href="/todolist">To Do List</Link><span> | </span>
         <ToggleTheme />
         </div>)
     }else{

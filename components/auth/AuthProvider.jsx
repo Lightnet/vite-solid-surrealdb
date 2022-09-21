@@ -23,6 +23,7 @@ export default function AuthProvider(props){
   const [clientDB, setClientDB] = createSignal(props.clientDB || null);
 
   const db = new SurrealDB('http://localhost:8000/rpc');
+  db.use('test','test')
   setClientDB(db)
 
   const value = [

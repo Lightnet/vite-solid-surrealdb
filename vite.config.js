@@ -6,15 +6,15 @@ import solidPlugin from 'vite-plugin-solid';
 //import { resolve } from "path";
 
 export default defineConfig({
-  optimizeDeps:{
-    disabled: true,
+  //optimizeDeps:{
+    //disabled: true,
     //extensions: ['jsx', 'tsx'],
-    esbuildOptions: {
+    //esbuildOptions: {
       //"jsx": "preserve",
-      "jsxImportSource": "solid-js",
+      //"jsxImportSource": "solid-js",
       //"jsxInject": `import { JSX } from 'solid-js'`,
-    },
-  },
+    //},
+  //},
   plugins: [
     solidPlugin()
   ],

@@ -18,10 +18,13 @@ import { createServer as createViteServer } from 'vite'
 //import * as vite from 'vite'
 import cors from "cors"
 import routeAPI from  "./src/server/api.js"
-//import { getDB } from "./libs/database.js"
+import { 
+//  getDB
+setUpDatabase 
+} from "./libs/database.js"
 //let db;
 
-console.log("script server.js")
+//console.log("script server.js")
 
 //CORS middleware
 var allowCrossDomain = function(req, res, next) {
@@ -42,6 +45,7 @@ async function createServer() {
 
   //main();
   //db = await getDB();
+  setUpDatabase();
 
   const app = express()
   app.use(cors({

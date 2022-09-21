@@ -36,17 +36,56 @@ async function fetchQuerySQL(query){
 	return data;
 }
 
-async function setUpDatahbase(_db){
+export async function setUpDatabase(){
 	//console.log("init db...")
 let result;
 let query = `
 DEFINE TABLE user SCHEMALESS
   PERMISSIONS
-    FOR select, update WHERE id = $auth.id, 
+    FOR select, update WHERE user = $auth.id,
     FOR create, delete NONE;
 DEFINE INDEX idx_email ON user COLUMNS email UNIQUE;
 `;
-let data = await fetchQuerySQL(query)
+result = await fetchQuerySQL(query)
+
+query = `
+DEFINE EVENT change_alias ON TABLE user WHEN $before.alias != $after.alias THEN (
+	CREATE event SET user = $this, time = time::now(), value = $after.alias, action = 'alias_changed'
+);
+`;
+result = await fetchQuerySQL(query)
+
+
+query = `
+DEFINE EVENT fetch_alias ON TABLE user WHEN $event = "UPDATE" AND $after.alias THEN
+	http::post('http://localhost:3000/api/user', { action: $event, data: $this })
+;
+`;
+
+query = `
+DEFINE EVENT fetch_alias ON TABLE user WHEN $event = "UPDATE" THEN
+	http::post('http://localhost:3000/api/user', { action: $event, data: $this, auth: $auth, scope: $scope })
+;
+`;
+result = await fetchQuerySQL(query)
+
+
+query = `
+DEFINE TABLE event SCHEMALESS
+  PERMISSIONS
+    FOR select, update NONE
+    FOR create, delete NONE;
+`;
+
+result = await fetchQuerySQL(query)
+
+//need to fix this...
+query = `
+DEFINE TABLE todolist SCHEMALESS
+  PERMISSIONS
+    FOR select, delete, update WHERE user_id = $auth.id;
+`;
+result = await fetchQuerySQL(query)
 //console.log("DEFINE TABLE user SCHEMALESS")
 //console.log(data)
 
@@ -60,13 +99,13 @@ let data = await fetchQuerySQL(query)
 query = `
 DEFINE SCOPE allusers
 	SESSION 14d
-	SIGNUP ( CREATE user SET email = $email, pass = crypto::argon2::generate($pass) )
+	SIGNUP ( CREATE user SET email = $email, pass = crypto::argon2::generate($pass), alias = $alias )
 	SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
 `;
-data = await fetchQuerySQL(query)
+result = await fetchQuerySQL(query)
 
 //console.log("DEFINE SCOPE allusers")
-//console.log(data)
+//console.log(result)
 
 //result = await _db.query('INFO FOR DB;');
 //console.log('INFO FOR DB')

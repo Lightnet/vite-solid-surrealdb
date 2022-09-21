@@ -32,6 +32,7 @@ export default function SignUp() {
         DB: 'test',
         NS: 'test',
         SC: 'allusers',
+        alias: alias(),
         email: email(),
         pass: passphrase()
       })
