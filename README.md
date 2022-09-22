@@ -16,6 +16,28 @@
 
  To develop and test how chat message work with permission as well develop simple message. One reason is reduce call from the server web http and go to directly to Surreal database with permission and authority logic.
 
+# User and Table:
+	Note that user access need to set up for scope to the database.
+
+	As well the table access permission without it. It will cause some error.
+
+```sql
+	CREATE message SET content="text";
+```
+	This will error out.
+
+```sql
+DEFINE TABLE message SCHEMALESS
+  PERMISSIONS
+    FOR select, update WHERE user = $auth.id, 
+    FOR create, delete NONE;
+```
+	Required Admin or root. No docs yet.
+
+```
+```
+
+
 # Database:
 
 	SurrealDB build on rust language. There is no UI that not yet release. Since SurrealDB run by command line to start server. It can used http Rest API query, SQL script, websocket and command line.
@@ -23,6 +45,7 @@
  SurrealDB has couple of way of handle database for json, doc, strict schemafull and schemaless table. 
  
  There is permissions for authority users for access tables. By default the config is empty in the database. As code developer can set up and custom way to setup scope access and define them. Note exposing the public required strict schema set up and permissions.
+
 
 ```sql
 DEFINE TABLE user SCHEMALESS

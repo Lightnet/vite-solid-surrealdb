@@ -30,7 +30,7 @@ setUpDatabase
 var allowCrossDomain = function(req, res, next) {
   //res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, X-Token');
 
   next();
 }
@@ -41,6 +41,7 @@ const allowedOrigins = [
 , 'http://127.0.0.1:8000'
 ]
 // https://expressjs.com/en/resources/middleware/cors.html#configuring-cors
+// https://stackabuse.com/handling-cors-with-node-js/
 async function createServer() {
 
   //main();
@@ -48,10 +49,11 @@ async function createServer() {
   setUpDatabase();
 
   const app = express()
+  
   app.use(cors({
     //origin: ['http://localhost:3000/', 'http://localhost:8000/'],
     origin: function(origin, callback){
-      //console.log(origin)
+      console.log(origin)
       // allow requests with no origin 
       // (like mobile apps or curl requests)
       if(!origin) return callback(null, true);
@@ -62,15 +64,16 @@ async function createServer() {
       }
       return callback(null, true);
     },
-    allowedHeaders:['Content-Type', 'Authorization'],
-    "preflightContinue": false,
-    //methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'],
-    //origin: '*',
+    //allowedHeaders:['Content-Type','Authorization','X-Token'],
+    preflightContinue: true,
+    //methods: "GET,POST,DELETE,UPDATE,PUT,PATCH,OPTIONS",
+    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH','OPTIONS'],
     //credentials: false, 
-    credentials: true, 
-    //origin: false,
-    //optionsSuccessStatus: 200
+    credentials: true,
+    optionsSuccessStatus: 204
   }))
+  app.options('*', cors()) // include before other routes
+  
   //app.use(allowCrossDomain);
 
   app.use(express.json());

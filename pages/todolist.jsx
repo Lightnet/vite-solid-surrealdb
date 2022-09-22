@@ -5,38 +5,94 @@
 */
 
 //import { Link } from '@solidjs/router'
-import { createEffect, createSignal } from 'solid-js'
+import { createEffect, createMemo, createSignal } from 'solid-js'
 import { useAuth } from '../components/auth/AuthProvider';
 
 export default function PageIndex() {
 
-  const [task, setTask] = createSignal("")
+  const [task, setTask] = createSignal("text")
+  const [tasks, setTasks] = createSignal([])
 
-  const [,{token}] = useAuth();
+  const [editID, setEditID] = createSignal("")
+  const [editTask, setEditTask] = createSignal("")
 
-  function getTask(){
+  const [,{token,clientDB}] = useAuth();
 
+  let dataToken = token().split(".")
+  let user = JSON.parse(atob(dataToken[1]));
+  console.log(user)
+
+  const SurrealDB = clientDB();
+
+  async function getTasks(){
+    try{
+    let data = await SurrealDB.query('SELECT * FROM todolist');
+    console.log(data)
+    if(data[0]?.result){
+      setTasks(data[0].result)
+    }
+    }catch(e){
+      console.log(e);
+    }
   }
 
-  function AddTask(){
-
+  async function AddTask(){
+    let result = await SurrealDB.query(`CREATE todolist SET content = "${task()}" ;`);
+    console.log(result)
+    console.log(result[0].result)
   }
 
-  function editTask(){
-
+  async function selectTaskID(id,_text){
+    setEditID(id);
+    setEditTask(_text)
   }
 
-  function deleteTask(){
-
+  async function clickUpdateTask(){
+    
+    //editID()
+    let result = await SurrealDB.query(`UPDATE ${editID()} SET content = "${editTask()}";`);
+    console.log(result)
+    setEditID("");
   }
 
+  async function deleteTask(id){
+    console.log(id)
+    let result = await SurrealDB.query(`DELETE ${id}`);
+    console.log(result)
+  }
+
+  const taskList = createMemo(()=>{
+    const items = tasks();
+
+    return items.map(item=>{
+      return (<div key={item.id}>
+        {editID() == item.id ? (
+          <>
+            <input value={editTask()} onInput={(e)=>setEditTask(e.target.value)} />
+            <button onClick={()=>clickUpdateTask()}> Update </button>
+          </>
+        ):(
+          <>
+          <label> {item.content} </label>
+          <button onClick={()=>selectTaskID(item.id, item.content)}> Edit </button>
+          </>
+        )}
+        
+        <button onClick={()=>deleteTask(item.id)}> x </button>
+      </div>)
+    })
+  })
+
+  getTasks();
 
   return (
     <div>
       <label>Home</label><span> | </span>
-      <input value={task()} onInput={(e)=>setTask(e.target.value)}/><button onClick={AddTask}>Add</button>
+      <input value={task()} onInput={(e)=>setTask(e.target.value)}/>
+      <button onClick={AddTask}>Add</button>
+      <button onClick={getTasks}>list</button>
       <div>
-
+        {taskList}
       </div>
     </div>
   )

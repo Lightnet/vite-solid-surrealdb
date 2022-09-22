@@ -55,20 +55,18 @@ DEFINE EVENT change_alias ON TABLE user WHEN $before.alias != $after.alias THEN 
 `;
 result = await fetchQuerySQL(query)
 
+//query = `
+//DEFINE EVENT fetch_alias ON TABLE user WHEN $event = "UPDATE" AND $after.alias THEN
+//	http::post('http://localhost:3000/api/user', { action: $event, data: $this })
+//;
+//`;
 
 query = `
-DEFINE EVENT fetch_alias ON TABLE user WHEN $event = "UPDATE" AND $after.alias THEN
-	http::post('http://localhost:3000/api/user', { action: $event, data: $this })
-;
-`;
-
-query = `
-DEFINE EVENT fetch_alias ON TABLE user WHEN $event = "UPDATE" THEN
-	http::post('http://localhost:3000/api/user', { action: $event, data: $this, auth: $auth, scope: $scope })
-;
+DEFINE EVENT fetch_alias ON TABLE user WHEN $event = "UPDATE" THEN (
+	http::post('http://localhost:3000/api/user', { action: $event, data: $this, auth: $auth, scope: $scope, test:"e" })
+);
 `;
 result = await fetchQuerySQL(query)
-
 
 query = `
 DEFINE TABLE event SCHEMALESS
@@ -79,13 +77,28 @@ DEFINE TABLE event SCHEMALESS
 
 result = await fetchQuerySQL(query)
 
-//need to fix this...
+//need to fix this... ?
 query = `
 DEFINE TABLE todolist SCHEMALESS
   PERMISSIONS
-    FOR select, delete, update WHERE user_id = $auth.id;
+    FOR select, create, delete, update WHERE user = $auth.id;
 `;
 result = await fetchQuerySQL(query)
+
+query = `
+DEFINE FIELD user ON TABLE todolist TYPE string VALUE $value;
+`;
+result = await fetchQuerySQL(query)
+console.log(result)
+query = `
+DEFINE FIELD created ON TABLE todolist TYPE datetime VALUE $before OR time::now();
+DEFINE FIELD updated ON TABLE todolist TYPE datetime VALUE time::now();
+`;
+result = await fetchQuerySQL(query)
+
+
+
+
 //console.log("DEFINE TABLE user SCHEMALESS")
 //console.log(data)
 
@@ -103,6 +116,17 @@ DEFINE SCOPE allusers
 	SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
 `;
 result = await fetchQuerySQL(query)
+
+query = `
+DEFINE FIELD role ON TABLE user
+  PERMISSIONS
+    FOR select FULL,
+    FOR create, update, delete WHERE $scope = 'admin';
+`;
+
+query = `DEFINE SCOPE admin SESSION 1h
+SIGNIN ( SELECT * FROM admin WHERE email = $email AND crypto::argon2::compare(pass, $pass) );`;
+
 
 //console.log("DEFINE SCOPE allusers")
 //console.log(result)
