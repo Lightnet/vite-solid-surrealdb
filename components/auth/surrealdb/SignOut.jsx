@@ -6,7 +6,7 @@
 
 import { Link, useNavigate } from '@solidjs/router'
 import { createEffect, createSignal } from 'solid-js'
-import { useAuth } from './AuthProvider'
+import { useAuth } from '../AuthProvider.jsx'; 
 
 export default function SignIn() {
 

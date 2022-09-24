@@ -53,7 +53,7 @@ async function createServer() {
   app.use(cors({
     //origin: ['http://localhost:3000/', 'http://localhost:8000/'],
     origin: function(origin, callback){
-      console.log(origin)
+      //console.log(origin)
       // allow requests with no origin 
       // (like mobile apps or curl requests)
       if(!origin) return callback(null, true);

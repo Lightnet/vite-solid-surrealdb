@@ -6,6 +6,7 @@
 
 import Surreal from 'surrealdb.js';
 import nodefetch from 'node-fetch';
+import { query } from 'express';
 
 /*
 ./surreal start --log debug --user root --pass root memory
@@ -36,104 +37,166 @@ async function fetchQuerySQL(query){
 	return data;
 }
 
-export async function setUpDatabase(){
-	//console.log("init db...")
-let result;
-let query = `
+async function queryDB(){
+	let result;
+	let query;
+
+	query = `INFO FOR DB;`;
+	result = await fetchQuerySQL(query)
+	console.log(result)
+}
+
+
+async function setupUser(){
+	let result;
+	let query;
+//SET UP SCHEMA
+query = `
 DEFINE TABLE user SCHEMALESS
   PERMISSIONS
     FOR select, update WHERE user = $auth.id,
     FOR create, delete NONE;
 DEFINE INDEX idx_email ON user COLUMNS email UNIQUE;
-`;
-result = await fetchQuerySQL(query)
-
-query = `
-DEFINE EVENT change_alias ON TABLE user WHEN $before.alias != $after.alias THEN (
-	CREATE event SET user = $this, time = time::now(), value = $after.alias, action = 'alias_changed'
-);
-`;
-result = await fetchQuerySQL(query)
-
-//query = `
-//DEFINE EVENT fetch_alias ON TABLE user WHEN $event = "UPDATE" AND $after.alias THEN
-//	http::post('http://localhost:3000/api/user', { action: $event, data: $this })
-//;
-//`;
-
-query = `
-DEFINE EVENT fetch_alias ON TABLE user WHEN $event = "UPDATE" THEN (
-	http::post('http://localhost:3000/api/user', { action: $event, data: $this, auth: $auth, scope: $scope, test:"e" })
-);
-`;
-result = await fetchQuerySQL(query)
-
-query = `
-DEFINE TABLE event SCHEMALESS
-  PERMISSIONS
-    FOR select, update NONE
-    FOR create, delete NONE;
-`;
-
-result = await fetchQuerySQL(query)
-
-//need to fix this... ?
-query = `
-DEFINE TABLE todolist SCHEMALESS
-  PERMISSIONS
-    FOR select, create, delete, update WHERE user = $auth.id;
-`;
-result = await fetchQuerySQL(query)
-
-query = `
-DEFINE FIELD user ON TABLE todolist TYPE string VALUE $value;
+DEFINE FIELD created ON TABLE user TYPE datetime VALUE $before OR time::now();
+DEFINE FIELD updated ON TABLE user TYPE datetime VALUE time::now();
+DEFINE FIELD pass ON TABLE user TYPE string;
+DEFINE FIELD email ON TABLE user TYPE string;
+DEFINE FIELD alias ON TABLE user TYPE string;
+DEFINE FIELD role ON TABLE user TYPE string;
 `;
 result = await fetchQuerySQL(query)
 console.log(result)
+
+// USER CHANGE ALIAS NAME
 query = `
-DEFINE FIELD created ON TABLE todolist TYPE datetime VALUE $before OR time::now();
-DEFINE FIELD updated ON TABLE todolist TYPE datetime VALUE time::now();
-`;
+DEFINE EVENT change_alias ON TABLE user WHEN $before.alias != $after.alias THEN (
+	CREATE event SET user = $this, time = time::now(), value = $after.alias, action = 'alias_changed'
+);`;
 result = await fetchQuerySQL(query)
-
-
-
-
-//console.log("DEFINE TABLE user SCHEMALESS")
-//console.log(data)
+console.log(result)
 
 //query = `
-//DEFINE SCOPE allusers
-//	SESSION 14d
-//	SIGNUP ( CREATE user SET settings.marketing = $marketing, email = $email, pass = crypto::argon2::generate($pass), tags = $tags )
-//	SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
-//`;
+//DEFINE EVENT fetch_alias ON TABLE user WHEN $event = "UPDATE" AND $after.alias THEN
+//	http::post('http://localhost:3000/api/user', { action: $event, data: $this });`;
 
+// LOG EVENT POST
+query = `
+DEFINE EVENT fetch_alias ON TABLE user WHEN $event = "UPDATE" THEN (
+	http::post('http://localhost:3000/api/user', { action: $event, data: $this, auth: $auth, scope: $scope, test:"e" })
+);`;
+result = await fetchQuerySQL(query)
+console.log(result)
+
+// USER ACCESS SCOPE
 query = `
 DEFINE SCOPE allusers
 	SESSION 14d
-	SIGNUP ( CREATE user SET email = $email, pass = crypto::argon2::generate($pass), alias = $alias )
-	SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
-`;
+	SIGNUP ( CREATE user SET email = $email, pass = crypto::argon2::generate($pass), alias = $alias, role = "allusers" )
+	SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) );`;
 result = await fetchQuerySQL(query)
+console.log(result)
 
+// ADMIN SCOPE 
 query = `
 DEFINE FIELD role ON TABLE user
   PERMISSIONS
     FOR select FULL,
     FOR create, update, delete WHERE $scope = 'admin';
 `;
+//result = await fetchQuerySQL(query)
 
-query = `DEFINE SCOPE admin SESSION 1h
+// ADMIN SCOPE LOGIN
+query = 
+`DEFINE SCOPE admin SESSION 1h
 SIGNIN ( SELECT * FROM admin WHERE email = $email AND crypto::argon2::compare(pass, $pass) );`;
+//result = await fetchQuerySQL(query)
+//console.log(result)
+//Testing logs
+
+}
+
+async function setupEvent(){
+	let result;
+	let query;
+	query = 
+`DEFINE TABLE event SCHEMALESS
+  PERMISSIONS
+    FOR select, update NONE,
+    FOR create, delete NONE;
+`;
+result = await fetchQuerySQL(query)
+console.log(result)
+}
 
 
-//console.log("DEFINE SCOPE allusers")
+async function setupToDoList(){
+	let result;
+	let query;
+
+// SET UP SCHEME 
+//need to fix this... ?
+query = `
+DEFINE TABLE todolist SCHEMALESS
+  PERMISSIONS NONE;
+`;
+// WHERE user = $auth.id,
+result = await fetchQuerySQL(query)
+console.log(result)
+
+query = `
+DEFINE FIELD update ON TABLE todolist TYPE datetime VALUE $before OR time::now();
+DEFINE FIELD created ON TABLE todolist TYPE datetime VALUE time::now();
+DEFINE FIELD content ON TABLE todolist TYPE string Value $value;
+`
+//result = await fetchQuerySQL(query)
+
+//query = `DEFINE FIELD user ON TABLE todolist TYPE string VALUE $value;`;
+//result = await fetchQuerySQL(query)
 //console.log(result)
 
-//result = await _db.query('INFO FOR DB;');
-//console.log('INFO FOR DB')
-//console.log(result)
+query = `
+DEFINE EVENT event_tasks ON TABLE todolist WHEN true THEN (
+	http::post('http://localhost:3000/api/user', { action: $event, data: $this})
+);`;
+// --DEFINE FIELD user ON TABLE todolist TYPE string;
+result = await fetchQuerySQL(query)
+console.log(result)
+
+}
+
+async function setupPost(){
+	let result;
+	let query;
+
+query = `
+DEFINE TABLE post SCHEMALESS
+  PERMISSIONS NONE;
+`;
+result = await fetchQuerySQL(query)
+console.log(result)
+
+query = `
+DEFINE FIELD update ON TABLE todolist TYPE datetime VALUE $before OR time::now();
+DEFINE FIELD created ON TABLE todolist TYPE datetime VALUE time::now();
+`
+result = await fetchQuerySQL(query)
+
+
+}
+
+export async function setUpDatabase(){
+	//console.log("init db...")
+	let result;
+	let query;
+	await setupUser()
+	await setupEvent();//debug?
+	await setupToDoList()
+
+console.log("----")
+
+
+
+
 console.log("finish init db...")
 }
 
@@ -170,46 +233,5 @@ async function getDB(){
 }
 
 export {
-  //main,
 	getDB
 }
-/*
-async function main() {
-
-	try {
-    // Signin as a namespace, database, or root user
-		await db.signin({
-			user: 'root',
-			pass: 'root',
-		});
-
-    // Select a specific namespace / database
-		await db.use('test', 'test');
-
-    // Create a new person with a random id
-    
-		let created = await db.create("person", {
-			title: 'Founder & CEO',
-			name: {
-				first: 'Tobie',
-				last: 'Morgan Hitchcock',
-			},
-			marketing: true,
-			identifier: Math.random().toString(36).substr(2, 10),
-		});
-    
-		// Update a person record with a specific id
-		//let updated = await db.change("person:jaime", {
-			//marketing: true,
-		//});
-
-		// Select all people records
-		let people = await db.select("person");
-    console.log(people)
-	} catch (e) {
-
-		console.error('ERROR', e);
-	}
-}
-*/
-//main();

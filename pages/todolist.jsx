@@ -5,6 +5,7 @@
 */
 
 //import { Link } from '@solidjs/router'
+import { useNavigate } from '@solidjs/router';
 import { createEffect, createMemo, createSignal } from 'solid-js'
 import { useAuth } from '../components/auth/AuthProvider';
 
@@ -18,6 +19,12 @@ export default function PageIndex() {
 
   const [,{token,clientDB}] = useAuth();
 
+  const navigate = useNavigate();
+  console.log(token())
+  if(!token()){
+    return navigate("/", { replace: true })
+  }
+  
   let dataToken = token().split(".")
   let user = JSON.parse(atob(dataToken[1]));
   console.log(user)
@@ -37,7 +44,11 @@ export default function PageIndex() {
   }
 
   async function AddTask(){
-    let result = await SurrealDB.query(`CREATE todolist SET content = "${task()}" ;`);
+    console.log(user.id);
+    //let result = await SurrealDB.query(`CREATE todolist SET content = "${task()}", user = '${user.id}'; `);
+    let query = `CREATE todolist SET content = "${task()}";`;
+    console.log(query)
+    let result = await SurrealDB.query(query);
     console.log(result)
     console.log(result[0].result)
   }

@@ -1,32 +1,29 @@
 
 /*
   This is http request rest api test.
+  For server nodejs testing. 
+  Does not support browser as cors blocked for fetch api. Root access work some how.
+  But the http rest api client does work.
 */
-
+// https://stackoverflow.com/questions/4810841/pretty-print-json-using-javascript
 //import { createJWT, verifyToken } from "./libs/serverapi.js";
 import nodefetch from 'node-fetch';
+import crypto from 'crypto';
 
-function textToBase64(params){
-	return Buffer.from(params).toString('base64');//note this is nodejs not broswer support
+function textToBase64(_data){
+  //note this is nodejs not browser support
+	return Buffer.from(_data).toString('base64');
 }
 
-/*
-const payload = { "username": "user1",id:'test', "exp": 1547974082 };
-var buf = Buffer.from(JSON.stringify(payload)).toString('base64url');
-console.log(buf)
-console.log(Buffer.from(buf,'base64url').toString('ascii'))
-let decode= JSON.parse(Buffer.from(buf,'base64url').toString('ascii'));
-console.log(decode)
-
-let secret = 'test'
-const token = createJWT(payload,secret);
-console.log(token);
-const user = verifyToken(token, secret);
-console.log("USER DATA")
-console.log(user)
-*/
+function base64ToText(_data){
+  //note this is nodejs not browser support
+	return Buffer.from(_data,'base64url').toString('ascii')
+}
 
 async function signIn(options){
+  if(!options){
+    options={};
+  }
   let response = await nodefetch(`http://localhost:8000/signin`, {
     method: 'POST',
     //mode: 'no-cors', //dev testing...
@@ -46,7 +43,7 @@ async function signIn(options){
       NS:'test',
       DB:'test',
       SC:'allusers',
-      email:options.email ||'test@test.test',
+      email: options.email ||'test@test.test',
       pass: options.pass || "pass"
     }),
   })
@@ -57,6 +54,9 @@ async function signIn(options){
 }
 
 async function signUp(options){
+  if(!options){
+    options={}
+  }
   let response = await nodefetch(`http://localhost:8000/signup`, {
     method: 'POST',
     //mode: 'no-cors', //dev testing...
@@ -76,8 +76,8 @@ async function signUp(options){
       NS:'test',
       DB:'test',
       SC:'allusers',
-      email: options.email || 'test@test.test',
-      pass: options.pass || "pass"
+      email: options?.email || 'test@test.test',
+      pass: options?.pass || "pass"
     }),
   })
 
@@ -138,13 +138,31 @@ async function tokenQuerySQL(token, query){
   return data;
 }
 
-async function mainPoint(){
-//let result;
+function parseUserID(_T){
+  let jwt = _T.split(".")[1]
+  return JSON.parse(base64ToText(jwt)).id;
+}
+
+async function queryDB(){
+  let data;
+  let query;
+  query = `INFO FOR DB;`
+  data = await fetchQuerySQL(query)
+  //console.log(data)
+  console.log("SCOPE:")
+  console.log(data[0].result.sc)
+  console.log("DATABASE:")
+  console.log(data[0].result.tb)
+}
+
+async function setupUser(){
 let data;
 let query;
 query = 
 `DEFINE TABLE user SCHEMALESS;
 DEFINE INDEX idx_email ON user COLUMNS email UNIQUE;
+DEFINE FIELD update ON TABLE user TYPE datetime VALUE $before OR time::now();
+DEFINE FIELD created ON TABLE user TYPE datetime VALUE time::now();
 `;
 //query = `SELECT * FROM user;`
 data = await fetchQuerySQL(query)
@@ -159,45 +177,109 @@ DEFINE SCOPE allusers
 data = await fetchQuerySQL(query)
 //console.log(data)
 
-query = `DEFINE TABLE message SCHEMALESS;`;//set up table without permission for testing. Else error no table.
-data = await fetchQuerySQL(query)
-//console.log(data)
+}
 
-query = `INFO FOR DB;`
-data = await fetchQuerySQL(query)
-//console.log(data)
+async function setupToDoList(){
+  let data;
+  let query;
 
-let signToken = await signUp({
+  query = 
+`DEFINE TABLE todolist SCHEMALESS;
+`;//set up table without permission for testing. Else error no table.
+data = await fetchQuerySQL(query)
+console.log(data)
+
+query = `
+DEFINE FIELD update ON TABLE todolist TYPE datetime VALUE $before OR time::now();
+DEFINE FIELD created ON TABLE todolist TYPE datetime VALUE time::now();
+`;
+data = await fetchQuerySQL(query)
+console.log(data)
+
+}
+
+async function getTasks(jwt){
+  let query = `SELECT * FROM todolist;`
+  let data = await tokenQuerySQL(jwt, query)
+  console.log(data[0].result)
+}
+
+async function addTask(jwt, _text){
+  let userID = parseUserID(jwt)
+  console.log(userID)
+
+  let query = `CREATE todolist SET content = "${_text}", user="${userID}";`
+  let data = await tokenQuerySQL(jwt, query)
+  console.log(data[0].result)
+}
+
+// "table:id"
+async function deleteTaskID(jwt, id){
+  let query = `DELETE "${id}";`
+  let data = await tokenQuerySQL(jwt, query)
+  console.log(data[0].result)
+}
+
+async function setupPost(){
+  let data;
+  let query;
+  query = 
+`DEFINE TABLE post SCHEMALESS;
+`;
+data = await fetchQuerySQL(query)
+console.log(data)
+
+query = `
+DEFINE FIELD update ON TABLE post TYPE datetime VALUE $before OR time::now();
+DEFINE FIELD created ON TABLE post TYPE datetime VALUE time::now();
+`;
+data = await fetchQuerySQL(query)
+console.log(data)
+
+}
+
+function jsPretty(_data){
+  console.log(JSON.stringify(_data,null,2 ))
+}
+
+async function mainPoint(){
+//let result;
+let data;
+let query;
+
+  await setupUser();
+  await setupToDoList();
+
+//let signToken = await signUp({
   //email:'test4',
   //pass:'test'
-})
-console.log(signToken)
-
-
+//})
 //let token = await signIn({
   //email:'test3',
   //pass:'test'
 //});
-//console.log("//=== token ===//")
-//console.log(token)
-//console.log("//=== token ===//")
 
-//query = `INFO FOR DB;` //not allow for users register testing.
-//data = await tokenQuerySQL(token, query)
-//console.log(data)
+//let token = await signUp() // test@test.test , pass
+await queryDB();
 
-//query = `CREATE message SET content="message test";`
-//data = await tokenQuerySQL(token, query)
-//console.log(data)
+let token = await signIn(); // test@test.test , pass
+console.log(token)
 
-//query = `SELECT * FROM message;`
-//data = await tokenQuerySQL(token, query)
-//console.log("MESSAGE")
-//console.log(data)
+let userID = parseUserID(token)
+console.log(userID)
 
-//if(data[0].result){
-  //console.log(data[0].result);
-//}
+// TASK LIST
+console.log("task list")
+await getTasks(token);
+//console.log("add list")
+// ADD TASK
+//let idran = crypto.randomUUID()
+//console.log(idran)
+//await addTask(token, "Hello " + idran)
+// DELETE TASK
+//await deleteTaskID(token, "todolist:halykd9i0naoia1jv25e")
+// UPDATE TASK?
+
 
 }
 

@@ -209,8 +209,10 @@ surreal export --conn http://localhost:8000 --user root --pass root --ns test --
 
 
 
-
-
-
-
+https://discord.com/channels/902568124350599239/970338835990974484/1022625034277232770
+```
+LET $my_records = [person:one, person:two, person:three, person:four];
+CREATE $my_records; -- will create the records, but will cause an error if any exist
+UPDATE $my_records; -- will create the records if they don't exist, and will not cause an error if any exist
+```
 

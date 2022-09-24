@@ -42,6 +42,7 @@ export default function SignIn() {
   }
 
   const btnSignUp = (e)=>{
+    e.preventDefault();
     navigate("/signup", { replace: true })
   }
 
@@ -51,7 +52,8 @@ export default function SignIn() {
       <label> Alias: </label><input value={alias()} onInput={(e)=>setAlias(e.target.value)}/><br/>
       <label> E-Mail: </label><input value={email()} onInput={(e)=>setEmail(e.target.value)}/><label> Status:{status()} </label><br/>
       <label> Passphrase: </label><input value={passphrase()} onInput={(e)=>setPassphrase(e.target.value)} /><br/>
-      <button onClick={btnSignUp}> Sign Up </button>
+      <a href='#' onClick={btnSignUp}> Sign Up </a>
+      
       <button onClick={btnLogin}> Login </button>
     </div>
   )

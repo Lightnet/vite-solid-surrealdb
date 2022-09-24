@@ -4,6 +4,7 @@
   Created by: Lightnet
 */
 
+import { useNavigate } from "@solidjs/router";
 import { createSignal } from "solid-js";
 import ChangeAlias from "../components/account/ChangeAlias";
 import { useAuth } from "../components/auth/AuthProvider"
@@ -11,7 +12,11 @@ import { useAuth } from "../components/auth/AuthProvider"
 export default function PageAccount() {
   const [aliasID, setAliasID] = createSignal("")
   const [,{token}] = useAuth();
-  //console.log(token())
+  const navigate = useNavigate();
+  console.log(token())
+  if(!token()){
+    return navigate("/", { replace: true })
+  }
   let jwt = token().split(".")
   //console.log(atob(jwt[1]))
   let data = JSON.parse(atob(jwt[1]))
