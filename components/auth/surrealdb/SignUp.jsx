@@ -6,7 +6,7 @@
 
 import { Link, useNavigate } from '@solidjs/router'
 import { createEffect, createSignal } from 'solid-js'
-import { useAuth } from '../AuthProvider'
+import { useAuth } from './AuthProvider'
 
 export default function SignUp() {
 
@@ -17,6 +17,7 @@ export default function SignUp() {
 
   const [session,{clientDB}] = useAuth();
   const SurrealDB = clientDB();
+  console.log(SurrealDB)
 
   const navigate = useNavigate();
 

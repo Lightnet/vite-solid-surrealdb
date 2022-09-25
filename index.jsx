@@ -8,8 +8,8 @@
 */
 
 import "./styles.css";
-import * as Solid from 'solid-js';
-console.log(Solid)
+//import * as Solid from 'solid-js';
+//console.log(Solid)
 //import { MetaProvider } from 'solid-meta';
 //import { createApp } from 'solid-utils';
 import { render } from "solid-js/web";

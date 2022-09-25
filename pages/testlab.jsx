@@ -9,6 +9,7 @@ import { createEffect, createMemo, createSignal } from 'solid-js'
 import Login from '../components/auth/surrealdb/TestSQL.jsx'
 import UserQuery from '../components/auth/surrealdb/UserQuery.jsx'
 import Modal from '../components/modal/Modal.jsx'
+import NotificationTest from '../components/notification/NotificationTest.jsx'
 //import { useAuth } from '../components/auth/AuthProvider';
 import NotifyTest from "../components/notify/NotifyTest"
 
@@ -32,6 +33,9 @@ export default function PageIndex() {
 
   return (
     <div>
+      <NotificationTest/>
+
+
       <UserQuery/>
       <Login/>
       <NotifyTest />

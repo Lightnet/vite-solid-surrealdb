@@ -6,7 +6,7 @@
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#Preflighted_requests
 import { Link } from '@solidjs/router'
 //import { createEffect } from 'solid-js'
-import { useAuth } from '../AuthProvider';
+import { useAuth } from './AuthProvider';
 
 export default function UserQuery() {
 

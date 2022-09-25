@@ -7,7 +7,7 @@
 //import { Link } from '@solidjs/router'
 import { useNavigate } from '@solidjs/router';
 import { createEffect, createMemo, createSignal } from 'solid-js'
-import { useAuth } from '../components/auth/AuthProvider';
+import { useAuth } from '../components/auth/surrealdb/AuthProvider';
 
 export default function PageIndex() {
 
@@ -33,24 +33,34 @@ export default function PageIndex() {
 
   async function getTasks(){
     try{
-    let data = await SurrealDB.query('SELECT * FROM todolist');
-    console.log(data)
-    if(data[0]?.result){
-      setTasks(data[0].result)
-    }
+      let data = await SurrealDB.query('SELECT * FROM todolist');
+      console.log(data)
+      if(data[0]?.result){
+        setTasks(data[0].result)
+      }
     }catch(e){
       console.log(e);
     }
   }
 
   async function AddTask(){
-    console.log(user.id);
-    //let result = await SurrealDB.query(`CREATE todolist SET content = "${task()}", user = '${user.id}'; `);
-    let query = `CREATE todolist SET content = "${task()}";`;
-    console.log(query)
-    let result = await SurrealDB.query(query);
-    console.log(result)
-    console.log(result[0].result)
+    try{
+      console.log(user.id);
+      //let result = await SurrealDB.query(`CREATE todolist SET content = "${task()}", user = '${user.id}'; `);
+      let query = `CREATE todolist SET content = "${task()}";`;
+      console.log(query)
+      let result = await SurrealDB.query(query);
+      console.log(result)
+      console.log(result[0].result[0])
+      console.log(result[0].result[0])
+      if(result[0]?.result[0]){
+        let rtask = result[0].result[0];
+        setTasks(state=>[...state,rtask])
+      }
+      
+    }catch(e){
+      console.log(e)
+    }
   }
 
   async function selectTaskID(id,_text){
@@ -59,17 +69,36 @@ export default function PageIndex() {
   }
 
   async function clickUpdateTask(){
-    
-    //editID()
-    let result = await SurrealDB.query(`UPDATE ${editID()} SET content = "${editTask()}";`);
-    console.log(result)
-    setEditID("");
+    console.log(editID())
+    try{
+      let result = await SurrealDB.query(`UPDATE ${editID()} SET content = "${editTask()}";`);
+      console.log(result)
+      
+      if(result[0]?.result[0]){
+        //let rtask = result[0].result[0];
+        setTasks(state=>state.map(item=>{
+          console.log(item)
+          if(item.id == editID()){
+            return {...item, content: editTask()}
+          }
+          return item;
+        }))
+      }
+      setEditID("");
+    }catch(e){
+      console.log(e)
+    }
   }
 
   async function deleteTask(id){
     console.log(id)
-    let result = await SurrealDB.query(`DELETE ${id}`);
-    console.log(result)
+    try{
+      let result = await SurrealDB.query(`DELETE ${id}`);
+      console.log(result)
+      setTasks(state=>state.filter(item=>item.id !== id))
+    }catch(e){
+      console.log(e)
+    }
   }
 
   const taskList = createMemo(()=>{
@@ -99,6 +128,9 @@ export default function PageIndex() {
   return (
     <div>
       <label>Home</label><span> | </span>
+
+      
+
       <input value={task()} onInput={(e)=>setTask(e.target.value)}/>
       <button onClick={AddTask}>Add</button>
       <button onClick={getTasks}>list</button>

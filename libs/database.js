@@ -6,9 +6,9 @@
 
 import Surreal from 'surrealdb.js';
 import nodefetch from 'node-fetch';
-import { query } from 'express';
 
 /*
+surreal start --log debug --user root --pass root memory
 ./surreal start --log debug --user root --pass root memory
 */
 
@@ -43,9 +43,10 @@ async function queryDB(){
 
 	query = `INFO FOR DB;`;
 	result = await fetchQuerySQL(query)
-	console.log(result)
+	//console.log(result)
+	console.log(result[0].result.sc)
+	console.log(result[0].result.tb)
 }
-
 
 async function setupUser(){
 	let result;
@@ -97,18 +98,16 @@ result = await fetchQuerySQL(query)
 console.log(result)
 
 // ADMIN SCOPE 
-query = `
-DEFINE FIELD role ON TABLE user
-  PERMISSIONS
-    FOR select FULL,
-    FOR create, update, delete WHERE $scope = 'admin';
-`;
+//query = `DEFINE FIELD role ON TABLE user
+//  PERMISSIONS
+//    FOR select FULL,
+//    FOR create, update, delete WHERE $scope = 'admin';
+//`;
 //result = await fetchQuerySQL(query)
 
 // ADMIN SCOPE LOGIN
-query = 
-`DEFINE SCOPE admin SESSION 1h
-SIGNIN ( SELECT * FROM admin WHERE email = $email AND crypto::argon2::compare(pass, $pass) );`;
+//query = `DEFINE SCOPE admin SESSION 1h
+//SIGNIN ( SELECT * FROM admin WHERE email = $email AND crypto::argon2::compare(pass, $pass) );`;
 //result = await fetchQuerySQL(query)
 //console.log(result)
 //Testing logs
@@ -128,7 +127,6 @@ result = await fetchQuerySQL(query)
 console.log(result)
 }
 
-
 async function setupToDoList(){
 	let result;
 	let query;
@@ -136,9 +134,7 @@ async function setupToDoList(){
 // SET UP SCHEME 
 //need to fix this... ?
 query = `
-DEFINE TABLE todolist SCHEMALESS
-  PERMISSIONS NONE;
-`;
+DEFINE TABLE todolist SCHEMALESS;`;
 // WHERE user = $auth.id,
 result = await fetchQuerySQL(query)
 console.log(result)
@@ -146,7 +142,7 @@ console.log(result)
 query = `
 DEFINE FIELD update ON TABLE todolist TYPE datetime VALUE $before OR time::now();
 DEFINE FIELD created ON TABLE todolist TYPE datetime VALUE time::now();
-DEFINE FIELD content ON TABLE todolist TYPE string Value $value;
+DEFINE FIELD content ON TABLE todolist TYPE string;
 `
 //result = await fetchQuerySQL(query)
 
@@ -154,8 +150,7 @@ DEFINE FIELD content ON TABLE todolist TYPE string Value $value;
 //result = await fetchQuerySQL(query)
 //console.log(result)
 
-query = `
-DEFINE EVENT event_tasks ON TABLE todolist WHEN true THEN (
+query = `DEFINE EVENT event_tasks ON TABLE todolist WHEN true THEN (
 	http::post('http://localhost:3000/api/user', { action: $event, data: $this})
 );`;
 // --DEFINE FIELD user ON TABLE todolist TYPE string;
@@ -188,8 +183,10 @@ export async function setUpDatabase(){
 	//console.log("init db...")
 	let result;
 	let query;
-	await setupUser()
+	await queryDB();
 	await setupEvent();//debug?
+	await setupUser();
+	
 	await setupToDoList()
 
 console.log("----")

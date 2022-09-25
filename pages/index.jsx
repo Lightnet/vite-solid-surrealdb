@@ -6,7 +6,7 @@
 
 import { Link } from '@solidjs/router'
 //import { createEffect } from 'solid-js'
-import { useAuth } from '../components/auth/AuthProvider';
+import { useAuth } from '../components/auth/surrealdb/AuthProvider';
 
 export default function PageIndex() {
 

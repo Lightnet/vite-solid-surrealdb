@@ -6,7 +6,7 @@
 
 import e from "cors";
 import { createSignal } from "solid-js"
-import { useAuth } from "../auth/AuthProvider";
+import { useAuth } from "../auth/surrealdb/AuthProvider";
 
 export default function ChangeAlias(){
 

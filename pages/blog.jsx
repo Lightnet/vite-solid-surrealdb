@@ -7,7 +7,7 @@
 import { useNavigate } from "@solidjs/router";
 import { createSignal } from "solid-js";
 import ChangeAlias from "../components/account/ChangeAlias";
-import { useAuth } from "../components/auth/AuthProvider"
+import { useAuth } from "../components/auth/surrealdb/AuthProvider"
 
 export default function PageBlog() {
 

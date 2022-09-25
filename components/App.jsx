@@ -11,7 +11,7 @@ import { Router, Routes, Route } from '@solidjs/router';
 
 import IndexMenus from "./IndexMenus";
 import ThemeProvider from "./theme/ThemeProvider";
-import AuthProvider from "./auth/AuthProvider";
+import AuthProvider from "./auth/surrealdb/AuthProvider";
 import NotifyProvider from "./notify/NotifyProvider"
 import NotifyManager from './notify/NotifyManager';
 
