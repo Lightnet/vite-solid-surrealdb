@@ -46,7 +46,7 @@ async function createServer() {
 
   //main();
   //db = await getDB();
-  setUpDatabase();
+  //await setUpDatabase();
 
   const app = express()
   

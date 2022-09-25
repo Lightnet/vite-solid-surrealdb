@@ -24,7 +24,7 @@ export default function AuthProvider(props){
 
   const db = new SurrealDB('http://localhost:8000/rpc');
   db.use('test','test')
-  setClientDB(db)
+  //setClientDB(db)
 
   const value = [
     session,
@@ -43,9 +43,9 @@ export default function AuthProvider(props){
     }
   ];
   //watch data
-  createEffect(() => {    
-    console.log(token())
-  })
+  //createEffect(() => {    
+    //console.log(token())
+  //})
 
   return (<AuthContext.Provider value={value}>
     {props.children}
