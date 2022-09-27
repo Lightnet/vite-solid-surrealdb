@@ -3,10 +3,17 @@
 # Status
 - prototype /unstable
 - testing / learning ...
+- SurrealDB on hold
+- Mongoose MongoDB build for testing UI and basic features.
 
 # Programs:
 - Nodejs 16.17.0
 - SurrealDB 1.0.0 beta 7
+
+# Features:
+- example of to do list.
+- example of post / blog
+- example account
 
 # Information:
 
@@ -39,6 +46,9 @@ DEFINE TABLE message SCHEMALESS
 
 
 # Database:
+	Note:
+	- $auth.id is not working on windows 10 64bit???.
+	- 1.0.0 beta 7
 
 	SurrealDB build on rust language. There is no UI that not yet release. Since SurrealDB run by command line to start server. It can used http Rest API query, SQL script, websocket and command line.
 
@@ -73,6 +83,7 @@ curl --request POST \
 	--data "${DATA}" \
 	http://localhost:8000/sql
 ```
+Linux command line?
 
  - https://surrealdb.com/docs/cli/sql
 ```command line
@@ -167,6 +178,17 @@ surreal start --log debug --user root --pass root memory
 ./surreal start --log debug --user root --pass root memory
 ```
 memory = does not store just tmp ram store.
+
+## .env:
+```
+SURREALDB_URL="http://127.0.0.1:8000/rpc"
+SURREALDB_NAMESPACE="test"
+SURREALDB_DATABASE="test"
+SURREALDB_USER="root"
+SURREALDB_PASS="root"
+SECRET="01234567890123456789012345678901"
+```
+	work in progress.
 
 # DB Events:
 	As read the docs for trigger event. It is possible to create fetch logic to call out to send out data. Since the SQL has javascript ESM format code support.
