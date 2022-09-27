@@ -2,11 +2,11 @@
 /*
   This is http request rest api test.
   For server nodejs testing. 
-  Does not support browser as cors blocked for fetch api. Root access work some how.
-  But the http rest api client does work.
+  After retesting fetch api and XMLHttpRequest works.
+  http rest api client browser ext does work.
 */
 // https://stackoverflow.com/questions/4810841/pretty-print-json-using-javascript
-//import { createJWT, verifyToken } from "./libs/serverapi.js";
+
 import nodefetch from 'node-fetch';
 import crypto from 'crypto';
 
@@ -115,6 +115,7 @@ async function fetchQuerySQL(query){
     },
     body: query,
   })
+  console.log(response)
 
   let data = await response.json();
   //console.log(data);
@@ -183,9 +184,19 @@ async function setupToDoList(){
   let data;
   let query;
 
-  query = 
-`DEFINE TABLE todolist SCHEMALESS;
-`;//set up table without permission for testing. Else error no table.
+//query = `DEFINE TABLE todolist SCHEMALESS;`;//set up table without permission for testing. Else error no table.
+//data = await fetchQuerySQL(query)
+//console.log(data)
+
+query = 
+`DEFINE TABLE todolist SCHEMALESS
+  PERMISSIONS
+    FOR select WHERE user = $auth.id,
+    FOR create, update
+      WHERE user = $auth.id,
+    FOR delete
+      WHERE user = $auth.id;
+`;
 data = await fetchQuerySQL(query)
 console.log(data)
 
@@ -213,10 +224,21 @@ async function addTask(jwt, _text){
   console.log(data[0].result)
 }
 
+async function postTaskTest(jwt){
+  let userID = parseUserID(jwt)
+  console.log(userID)
+  const _text = "hello " + crypto.randomUUID();
+
+  let query = `CREATE todolist SET content = "${_text}", user="${userID}";`
+  let data = await tokenQuerySQL(jwt, query)
+  console.log(data[0].result)
+}
+
 // "table:id"
 async function deleteTaskID(jwt, id){
   let query = `DELETE "${id}";`
   let data = await tokenQuerySQL(jwt, query)
+  console.log(data)
   console.log(data[0].result)
 }
 
@@ -246,38 +268,31 @@ async function mainPoint(){
 //let result;
 let data;
 let query;
+let token;
+  //await setupUser();
+  //await setupToDoList();
+  await queryDB();  
+//token = await signUp({email:'test1',pass:'test'})
+//token = await signIn({email:'test1',pass:'test'});
 
-  await setupUser();
-  await setupToDoList();
+//token = await signUp() // test@test.test , pass
+//token = await signIn(); // test@test.test , pass
+//console.log(token)
 
-//let signToken = await signUp({
-  //email:'test4',
-  //pass:'test'
-//})
-//let token = await signIn({
-  //email:'test3',
-  //pass:'test'
-//});
-
-//let token = await signUp() // test@test.test , pass
-await queryDB();
-
-let token = await signIn(); // test@test.test , pass
-console.log(token)
-
-let userID = parseUserID(token)
-console.log(userID)
+//let userID = parseUserID(token)
+//console.log(userID)
 
 // TASK LIST
-console.log("task list")
-await getTasks(token);
+//console.log("task list")
+//await getTasks(token);
 //console.log("add list")
 // ADD TASK
 //let idran = crypto.randomUUID()
 //console.log(idran)
 //await addTask(token, "Hello " + idran)
+//await postTaskTest(token)
 // DELETE TASK
-//await deleteTaskID(token, "todolist:halykd9i0naoia1jv25e")
+//await deleteTaskID(token, 'todolist:mponzmtgsaxu3ivm6m3q')
 // UPDATE TASK?
 
 

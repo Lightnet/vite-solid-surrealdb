@@ -134,28 +134,29 @@ async function setupToDoList(){
 // SET UP SCHEME 
 //need to fix this... ?
 query = `
-DEFINE TABLE todolist SCHEMALESS;`;
+DEFINE TABLE todolist SCHEMALESS
+	PERMISSIONS NONE;`;
 // WHERE user = $auth.id,
 result = await fetchQuerySQL(query)
 console.log(result)
 
-query = `
-DEFINE FIELD update ON TABLE todolist TYPE datetime VALUE $before OR time::now();
-DEFINE FIELD created ON TABLE todolist TYPE datetime VALUE time::now();
-DEFINE FIELD content ON TABLE todolist TYPE string;
-`
+//query = `
+//DEFINE FIELD update ON TABLE todolist TYPE datetime VALUE $before OR time::now();
+//DEFINE FIELD created ON TABLE todolist TYPE datetime VALUE time::now();
+//DEFINE FIELD content ON TABLE todolist TYPE string;
+//`
 //result = await fetchQuerySQL(query)
 
 //query = `DEFINE FIELD user ON TABLE todolist TYPE string VALUE $value;`;
 //result = await fetchQuerySQL(query)
 //console.log(result)
 
-query = `DEFINE EVENT event_tasks ON TABLE todolist WHEN true THEN (
-	http::post('http://localhost:3000/api/user', { action: $event, data: $this})
-);`;
+//query = `DEFINE EVENT event_tasks ON TABLE todolist WHEN true THEN (
+//	http::post('http://localhost:3000/api/user', { action: $event, data: $this})
+//);`;
 // --DEFINE FIELD user ON TABLE todolist TYPE string;
-result = await fetchQuerySQL(query)
-console.log(result)
+//result = await fetchQuerySQL(query)
+//console.log(result)
 
 }
 

@@ -1,12 +1,94 @@
 
 # Account:
+ - auth.id is null might not work...
   Work in progress.
+
+
+https://discord.com/channels/902568124350599239/1023677689082683514/1023678228398886952
+```
+let res = await db.info();
+console.log(res);
+// or
+let res = await db.query('SELECT * FROM $auth');
+console.log(res);
+```
+
+https://discord.com/channels/902568124350599239/902568124350599242/1021349915714138213
+```
+DEFINE TABLE user PERMISSIONS WHERE id = $auth.id; -- The logged-in user can only select/update/delete their own user account...
+-- A normal query would be...
+-- $username = `tobiemh`
+SELECT * FROM user WHERE username = $username; -- Ok all good. I am this user, so I can select it
+-- Imagine I then try to inject the query...
+-- $username = `tobiemh' OR admin = true`
+SELECT * FROM user WHERE username = $username; -- Uhoh they are trying to access the admins too!
+```
+
+work partly...
+```
+query = `USE NS test DB test;
+DEFINE TABLE todolist SCHEMALESS
+  PERMISSIONS
+    FOR select WHERE $in = $auth.id AND http::post('http://localhost:1337/echo', {data: $this, auth: $auth.id}) != NONE,
+    FOR create, update
+      WHERE $in = $auth.id,
+    FOR delete
+      WHERE $in = $auth.id;
+`;
+```
+https://discord.com/channels/902568124350599239/1013527402674139268/1023325991516516382
+```
+let info = await db.info();
+-- or
+let info = await db.query('SELECT * FROM $auth');
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://discord.com/channels/902568124350599239/902568124350599242/1023665441807282256
+```
+-- Specify access permissions for the 'post' table
+DEFINE TABLE post SCHEMALESS
+    PERMISSIONS
+        FOR select
+            -- Published posts can be selected
+            WHERE published = true
+            -- A user can select all their own posts
+            OR user = $auth.id
+        FOR create, update
+            -- A user can create or update their own posts
+            WHERE user = $auth.id && http::post('/api/validate', this) != NONE
+        FOR delete
+            -- A user can delete their own posts
+            WHERE user = $auth.id
+            -- Or an admin can delete any posts
+            OR $auth.admin = true
+;
+```
+
+
+
+
+
+
+
 
 
 https://discord.com/channels/902568124350599239/902568124350599242/1020490083079573504
 ```
 DEFINE FIELD password ON user TYPE string PERMISSIONS NONE;
 ```
+
 
 
 

@@ -13,6 +13,10 @@ import NotificationTest from '../components/notification/NotificationTest.jsx'
 //import { useAuth } from '../components/auth/AuthProvider';
 import NotifyTest from "../components/notify/NotifyTest"
 
+import XMLQuery from '../components/surrealdb/XMLQuery.jsx'
+import FetchQuery from '../components/surrealdb/FetchQuery.jsx'
+import AxiosQuery from '../components/surrealdb/AxiosQuery.jsx'
+
 export default function PageIndex() {
 
   //const [,{token}] = useAuth();
@@ -39,7 +43,11 @@ export default function PageIndex() {
       <UserQuery/>
       <Login/>
       <NotifyTest />
+      <XMLQuery/>
+      <FetchQuery/>
+      <AxiosQuery/>
       <button onClick={openModal}> Modal </button>
+
       <Modal isopen={isModal} onClose={isCloseModal} enabledrag={true}>
         <label> Hello! </label>
       </Modal>

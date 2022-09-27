@@ -21,7 +21,7 @@ import routeAPI from  "./src/server/api.js"
 import { 
 //  getDB
 setUpDatabase 
-} from "./libs/database.js"
+} from "./libs/db/surrealdb/database.js"
 //let db;
 
 //console.log("script server.js")

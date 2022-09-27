@@ -4,10 +4,8 @@
   Created by: Lightnet
 */
 
-import Surreal from 'surrealdb.js'
 import {Router} from 'express'
-import { getDB } from '../../../libs/database.js'
-import { isEmpty } from '../../../libs/helper.js'
+import { isEmpty } from '../../../../libs/helper.js'
 
 const router = Router()
 
@@ -21,41 +19,7 @@ router.post('/login', async (req, res) => {
     return;
   }
   try {
-    console.log("process?")
-    let db = await getDB();
-    // note that need another Instance as it overlap the login from server root else account can view other users
-    await Surreal.Instance.connect('http://localhost:8000/rpc');
-    await Surreal.Instance.use("test", "test");
-
-    console.log(email);
-    
-    let surrealToken = await Surreal.Instance.signin({
-      NS: 'test',
-      DB: 'test',
-      SC: 'allusers',
-      email: email,
-      pass: passphrase,
-    });
-    await Surreal.Instance.close()//close connect since were doing getting access
-    /*
-    let token = "Test"
-
-    let query = await db.query(`SELECT * FROM user`);
-    console.log("query users")
-    console.log(query)
-
-    let users = await db.query(`SELECT * FROM user WHERE email = $email`,{
-      email: alias +'@surrealdb.test',
-    });
-
-    console.log("users")
-    console.log(users)
-    console.log(users[0].result[0])
-    */
-    console.log(surrealToken)
-    res.send(JSON.stringify({api:'TOKEN',token:surrealToken}))
-    return;
-    
+   
   } catch (error) {
     res.send(JSON.stringify({api:'Incorrect Access!'}))
     //console.log(error)
@@ -77,22 +41,7 @@ router.post('/signup', async (req, res) => {
   }
 
   try {
-    let db = await getDB();
-    let token = await db.signup({
-      NS: 'test',
-      DB: 'test',
-      SC: 'allusers',
-      //email: 'info@surrealdb.com',
-      email: email,
-      //user:alias,
-      //email:alias + '@test.com',
-      pass: passphrase,
-      marketing: true,
-      tags: ['rust', 'golang', 'javascript'], // We can add any variable here to use in the SIGNUP clause
-    });
-    
-    console.log(token)
-    res.send(JSON.stringify({api:'CREATED'}))
+
     return;
     
   } catch (error) {

@@ -216,3 +216,8 @@ CREATE $my_records; -- will create the records, but will cause an error if any e
 UPDATE $my_records; -- will create the records if they don't exist, and will not cause an error if any exist
 ```
 
+
+https://stackoverflow.com/questions/73779536/how-to-remove-a-relation-in-surrealdb
+```
+DELETE interested_in WHERE in.username = 'user_male' AND out = 'gender:female';
+```
