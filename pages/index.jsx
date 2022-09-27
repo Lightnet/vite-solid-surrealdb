@@ -6,20 +6,21 @@
 
 import { Link } from '@solidjs/router'
 //import { createEffect } from 'solid-js'
-import { useAuth } from '../components/auth/surrealdb/AuthProvider';
+import { useAuth } from '../components/auth/api/AuthProvider';
 
 export default function PageIndex() {
 
-  const [,{token}] = useAuth();
+  const [,{isLogin}] = useAuth();
 
   return (
     <div>
       <label>Home</label><span> | </span>
-      {token()?(<>
+      {isLogin()?(<>
         <Link href='/signout'>Sign Out</Link><span> | </span>
       </>):(<>
         <Link href='/signin'>Sign In</Link><span> | </span>
         <Link href='/signup'>Sign Up</Link><span> | </span>
+        <Link href='/signout'>Sign Out</Link><span> | </span>
       </>)}
     </div>
   )

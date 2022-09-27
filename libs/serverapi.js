@@ -57,7 +57,7 @@ export function createJWT(_data, _secret){
 export function verifyToken(_token, _secret){
   try {
     const token = _token.split(".");
-    const header = Base64urlToJson(token[0])
+    //const header = Base64urlToJson(token[0])
     const payload = Base64urlToJson(token[1])
     const signature = token[2]
     console.log(signature)

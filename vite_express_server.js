@@ -18,11 +18,8 @@ import { createServer as createViteServer } from 'vite'
 //import * as vite from 'vite'
 import cors from "cors"
 import routeAPI from  "./src/server/api.js"
-import { 
-//  getDB
-setUpDatabase 
-} from "./libs/db/surrealdb/database.js"
-//let db;
+//import { setupDatabase } from "./libs/db/surrealdb/database.js"
+import { setupDatabase } from "./libs/db/mongoose/database.js"
 
 //console.log("script server.js")
 
@@ -46,7 +43,7 @@ async function createServer() {
 
   //main();
   //db = await getDB();
-  await setUpDatabase();
+  await setupDatabase();
 
   const app = express()
   

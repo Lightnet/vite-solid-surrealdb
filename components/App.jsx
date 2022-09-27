@@ -9,26 +9,32 @@ import { lazy } from 'solid-js';
 //import { createApp } from 'solid-utils';
 import { Router, Routes, Route } from '@solidjs/router';
 
-import IndexMenus from "./IndexMenus";
-import ThemeProvider from "./theme/ThemeProvider";
-import AuthProvider from "./auth/surrealdb/AuthProvider";
-import NotifyProvider from "./notify/NotifyProvider"
-import NotifyManager from './notify/NotifyManager';
+import IndexMenus from "./IndexMenus.jsx";
+import ThemeProvider from "./theme/ThemeProvider.jsx";
+import NotifyProvider from "./notify/NotifyProvider.jsx"
+import NotifyManager from './notify/NotifyManager.jsx';
+
+//import AuthProvider from "./auth/surrealdb/AuthProvider";
+//const SignIn = lazy(() => import('./auth/surrealdb/SignIn'))
+//const SignUp = lazy(() => import('./auth/surrealdb/SignUp'))
+//const SignOut = lazy(() => import('./auth/surrealdb/SignOut'))
+
+import AuthProvider from "./auth/api/AuthProvider.jsx";
+const SignIn = lazy(() => import('./auth/api/SignIn'))
+const SignUp = lazy(() => import('./auth/api/SignUp'))
+const SignOut = lazy(() => import('./auth/api/SignOut'))
 
 const Home = lazy(() => import('../pages/index'))
 const About = lazy(() => import('../pages/about'))
-const SignIn = lazy(() => import('./auth/surrealdb/SignIn'))
-const SignUp = lazy(() => import('./auth/surrealdb/SignUp'))
-const SignOut = lazy(() => import('./auth/surrealdb/SignOut'))
 const TestLab = lazy(() => import('../pages/testlab'))
 const ToDoList = lazy(() => import('../pages/todolist'))
 const SurrealDB = lazy(() => import('../pages/surrealdb'))
 const Account = lazy(() => import('../pages/account'))
 const Blog = lazy(() => import('../pages/blog'))
 
-const HelloApp = () => {
-  return (<label></label>)
-};
+//const HelloApp = () => {
+//  return (<label></label>)
+//};
 
 const RouterApp = () => {
   return (

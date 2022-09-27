@@ -180,7 +180,7 @@ result = await fetchQuerySQL(query)
 
 }
 
-export async function setUpDatabase(){
+export async function setupDatabase(){
 	//console.log("init db...")
 	let result;
 	let query;

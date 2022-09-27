@@ -6,7 +6,8 @@
 console.log("init api...")
 import {Router} from 'express'
 import { getDB } from '../../libs/db/surrealdb/database.js'
-import auth from "./auth/surrealdb/auth.js"
+//import auth from "./auth/surrealdb/auth.js"
+import auth from "./auth/mongoose/auth.js"
 
 const router = Router()
 

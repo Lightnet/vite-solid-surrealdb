@@ -6,7 +6,7 @@
 
 import { Link, useNavigate } from '@solidjs/router'
 import { createEffect, createSignal } from 'solid-js'
-import { useAuth } from './AuthProvider'
+import { useAuth } from './AuthProvider.jsx'
 
 export default function SignIn() {
 
@@ -21,6 +21,7 @@ export default function SignIn() {
   const btnSignOut = async (e)=>{
     try{
       setToken(null)
+      fetch('/api/auth/signout')
       navigate("/", { replace: true })
     }catch(e){
       console.log(e)

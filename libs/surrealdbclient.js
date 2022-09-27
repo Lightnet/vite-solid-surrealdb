@@ -3,6 +3,7 @@
   License: MIT
   Created by: Lightnet
 */
+
 // https://github.com/jareer12/surrealdb/blob/main/src/index.ts
 // https://stackoverflow.com/questions/51506579/sending-authorization-token-bearer-through-javascript
 // https://stackoverflow.com/questions/246801/how-can-you-encode-a-string-to-base64-in-javascript
