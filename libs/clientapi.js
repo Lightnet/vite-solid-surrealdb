@@ -7,7 +7,8 @@
 export function jwtUser(token){
   try{
     const tokens = token.split(".")
-    let data = JSON.parse(atob(tokens[1]))
+    let data = atob(tokens[1])
+    data = JSON.parse(data)
     return data;
   }catch(e){
     return null;

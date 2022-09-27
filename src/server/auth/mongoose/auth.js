@@ -8,43 +8,58 @@ import { Router } from 'express';
 import { isEmpty } from '../../../../libs/helper.js';
 import UserModel from '../../../../libs/db/mongoose/user.js';
 import cookie from 'cookie';
+import { createJWT } from '../../../../libs/serverapi.js';
+import { v4 as uuidv4 } from 'uuid';
+import { config } from 'dotenv';
+config();
 
+const SECRET = process.env.SECRET || "TEST0123456789012345678901";
+console.log("process.env.SECRET: ",process.env.SECRET)
+console.log("SECRET: ",SECRET)
 const router = Router()
 
 router.post('/login', async (req, res) => {
   res.set('Content-Type', 'application/json');
-  console.log(req.body)
+  //console.log(req.body)
   const {email, passphrase} = req.body;
-  console.log(isEmpty(email))
+  //console.log(isEmpty(email))
   if(isEmpty(email) == true || isEmpty(passphrase) == true){
-    console.log("EMPTY")
+    //console.log("EMPTY")
     res.send(JSON.stringify({api:'EMPTY'}))
     return;
   }
   try {
-    console.log("QUERY")
-    let user = await UserModel.findOne({
-      email: email
-    })
-    console.log("user: ",user)
+    //console.log("QUERY")
+    let user;
+    //console.log("email: ",email)
+    user = await UserModel.findOne({email: email})
+    //console.log("user: ",user)
+
     if(user){
       if(user.checkPassphrase(passphrase)){
-        console.log("Do SOMETHING???");
+        //console.log("Do SOMETHING???");
         let token = "";
 
+        const userData ={
+          id:uuidv4(),
+          aliasID:user.aliasID,
+          alias:user.alias,
+          date: Date.now()
+        }
 
-        var setCookie = cookie.serialize('token', 'bar',{
+        token = createJWT(userData, SECRET);
+        //console.log(token)
+        var setCookie = cookie.serialize('token', token,{
           httpOnly:true,
           path:"/",
-          maxAge: 60 * 60 * 24 * 7 // 1 week
+          //maxAge: 60 * 60 * 24 * 7 // 1 week
+          maxAge: 60 * 60 * 24 // day
         });
-        console.log(setCookie)
+        //console.log(setCookie)
         res.setHeader('Set-Cookie',setCookie);
+        //console.log("finish...")
 
-
-
-
-        return res.send(JSON.stringify({api:'PASS!'}))
+        return res.send(JSON.stringify({api:'TOKEN',token:token}))
       }else{
         return res.send(JSON.stringify({api:'BADPASS!'}))  
       }
@@ -64,9 +79,9 @@ router.post('/login', async (req, res) => {
 router.post('/signup', async (req, res) => {
   res.set('Content-Type', 'application/json');
   console.log(req.body)
-  const {email, passphrase} = req.body;
+  const {alias, email, passphrase} = req.body;
 
-  if(!email || !passphrase){
+  if(!email || !passphrase || !alias){
     res.send(JSON.stringify({api:'EMPTY'}))
     return;
   }
@@ -78,6 +93,7 @@ router.post('/signup', async (req, res) => {
     console.log("user: ",user)
     if(!user){
       const newUser = new UserModel({
+        alias:alias,
         email:email
       });
 

@@ -6,28 +6,25 @@
 
 import { useNavigate } from "@solidjs/router";
 import { createSignal } from "solid-js";
-import ChangeAlias from "../components/account/ChangeAlias";
-import { useAuth } from "../components/auth/surrealdb/AuthProvider"
+import ChangeAlias from "../components/account/api/ChangeAlias";
+import { useAuth } from "../components/auth/api/AuthProvider"
 
 export default function PageAccount() {
+
   const [aliasID, setAliasID] = createSignal("")
-  const [,{token}] = useAuth();
+  const [,{user,isLogin}] = useAuth();
   const navigate = useNavigate();
-  console.log(token())
-  if(!token()){
-    return navigate("/", { replace: true })
-  }
-  let jwt = token().split(".")
-  //console.log(atob(jwt[1]))
-  let data = JSON.parse(atob(jwt[1]))
-  //console.log(data)
-  setAliasID(data.id)
+
+  console.log(isLogin())
+  //if(!isLogin()){
+    //return navigate("/", { replace: true })
+  //}
+
   return (<>
-  {token() ? (
+  {isLogin() ? (
     <>
-      <label>ID: {aliasID()}</label><br/>
+      <label>Alias: {user()}</label><br/>
       <ChangeAlias/>
-      
     </>
   ):(
     <>

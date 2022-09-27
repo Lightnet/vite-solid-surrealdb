@@ -9,10 +9,8 @@ import path from 'path'
 import express from 'express'
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { config } from 'dotenv';
 //import Gun from "gun";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 import { createServer as createViteServer } from 'vite'
 //import routeAPI from  "./src/server/api.js"
 //import * as vite from 'vite'
@@ -21,16 +19,19 @@ import routeAPI from  "./src/server/api.js"
 //import { setupDatabase } from "./libs/db/surrealdb/database.js"
 import { setupDatabase } from "./libs/db/mongoose/database.js"
 
+config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 //console.log("script server.js")
 
 //CORS middleware
-var allowCrossDomain = function(req, res, next) {
+//var allowCrossDomain = function(req, res, next) {
   //res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, X-Token');
-
-  next();
-}
+  //res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  //res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, X-Token');
+  //next();
+//}
 
 const allowedOrigins = [
   'http://localhost:8000'

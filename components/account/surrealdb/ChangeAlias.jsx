@@ -4,9 +4,8 @@
   Created by: Lightnet
 */
 
-import e from "cors";
 import { createSignal } from "solid-js"
-import { useAuth } from "../auth/surrealdb/AuthProvider";
+import { useAuth } from "../../auth/surrealdb/AuthProvider";
 
 export default function ChangeAlias(){
 

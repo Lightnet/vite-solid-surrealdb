@@ -6,6 +6,7 @@
 
 import { Link, useNavigate } from '@solidjs/router'
 import { createEffect, createSignal } from 'solid-js'
+import { jwtUser } from '../../../libs/clientapi.js'
 import { useAuth } from './AuthProvider.jsx'
 
 export default function SignIn() {
@@ -19,8 +20,8 @@ export default function SignIn() {
   const navigate = useNavigate();
 
   const btnLogin = async (e)=>{
-    console.log(alias())
-    console.log(passphrase())
+    //console.log(alias())
+    //console.log(passphrase())
     try{
       const resp = await fetch('/api/auth/login',{
         method:'POST',
@@ -35,10 +36,11 @@ export default function SignIn() {
         })
       })
       const data = await resp.json()
-      console.log(data)
+      //console.log(data)
       if(data){
         if(data?.api=='TOKEN'){
           setToken(data.token)
+          //console.log(jwtUser(data.token))
           navigate("/", { replace: true })
         }
       }
