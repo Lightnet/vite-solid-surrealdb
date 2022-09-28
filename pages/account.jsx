@@ -6,8 +6,11 @@
 
 import { useNavigate } from "@solidjs/router";
 import { createSignal } from "solid-js";
-import ChangeAlias from "../components/account/api/ChangeAlias";
-import { useAuth } from "../components/auth/api/AuthProvider"
+//import ChangeAlias from "../components/account/api/ChangeAlias";
+//import { useAuth } from "../components/auth/api/AuthProvider"
+
+import ChangeAlias from "../components/account/surrealdb/ChangeAlias";
+import { useAuth } from "../components/auth/surrealdb/AuthProvider"
 
 export default function PageAccount() {
 

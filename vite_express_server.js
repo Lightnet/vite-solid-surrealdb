@@ -16,8 +16,8 @@ import { createServer as createViteServer } from 'vite'
 //import * as vite from 'vite'
 import cors from "cors"
 import routeAPI from  "./src/server/api.js"
-//import { setupDatabase } from "./libs/db/surrealdb/database.js"
-import { setupDatabase } from "./libs/db/mongoose/database.js"
+import { setupDatabase } from "./libs/db/surrealdb/database.js"
+//import { setupDatabase } from "./libs/db/mongoose/database.js"
 
 config();
 const __filename = fileURLToPath(import.meta.url);

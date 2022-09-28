@@ -14,15 +14,15 @@ import ThemeProvider from "./theme/ThemeProvider.jsx";
 import NotifyProvider from "./notify/NotifyProvider.jsx"
 import NotifyManager from './notify/NotifyManager.jsx';
 
-//import AuthProvider from "./auth/surrealdb/AuthProvider";
-//const SignIn = lazy(() => import('./auth/surrealdb/SignIn'))
-//const SignUp = lazy(() => import('./auth/surrealdb/SignUp'))
-//const SignOut = lazy(() => import('./auth/surrealdb/SignOut'))
+import AuthProvider from "./auth/surrealdb/AuthProvider";
+const SignIn = lazy(() => import('./auth/surrealdb/SignIn'))
+const SignUp = lazy(() => import('./auth/surrealdb/SignUp'))
+const SignOut = lazy(() => import('./auth/surrealdb/SignOut'))
 
-import AuthProvider from "./auth/api/AuthProvider.jsx";
-const SignIn = lazy(() => import('./auth/api/SignIn'))
-const SignUp = lazy(() => import('./auth/api/SignUp'))
-const SignOut = lazy(() => import('./auth/api/SignOut'))
+//import AuthProvider from "./auth/api/AuthProvider.jsx";
+//const SignIn = lazy(() => import('./auth/api/SignIn'))
+//const SignUp = lazy(() => import('./auth/api/SignUp'))
+//const SignOut = lazy(() => import('./auth/api/SignOut'))
 
 const Home = lazy(() => import('../pages/index'))
 const About = lazy(() => import('../pages/about'))

@@ -44,7 +44,6 @@ DEFINE TABLE message SCHEMALESS
 ```
 ```
 
-
 # Database:
 	Note:
 	- $auth.id is not working on windows 10 64bit???.

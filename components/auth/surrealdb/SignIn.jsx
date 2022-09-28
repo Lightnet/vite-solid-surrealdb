@@ -15,7 +15,7 @@ export default function SignIn() {
   const [email, setEmail] = createSignal('test@test.test')
   const [status, setStatus] = createSignal('...')
 
-  const [,{setToken,clientDB}] = useAuth();
+  const [,{setUser, setToken,clientDB}] = useAuth();
   const SurrealDB = clientDB();
 
   const navigate = useNavigate();
@@ -31,6 +31,9 @@ export default function SignIn() {
         email: email(),
         pass: passphrase()
       })
+      let userData = await SurrealDB.query(`SELECT * FROM user WHERE email = "${email()}";`)
+      setUser(userData[0].result[0].alias)
+      console.log(userData)
       console.log(token);
       setToken(token)
       setStatus("PASS!")

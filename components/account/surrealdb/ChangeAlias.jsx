@@ -11,11 +11,14 @@ export default function ChangeAlias(){
 
   const [alias, setAlias] = createSignal('stest');
 
-  const [,{token, clientDB}] = useAuth();
+  const [,{user, token, isLogin, clientDB}] = useAuth();
   const SurealDB = clientDB();
 
   async function getInfo(){
-    if(token()){
+    if(isLogin()){
+      
+    setAlias(user())
+    /*
     let jwt = token().split(".")
     console.log(atob(jwt[1]))
     let dataToken = JSON.parse(atob(jwt[1]))
@@ -28,9 +31,12 @@ export default function ChangeAlias(){
     let data = await SurealDB.query(`SELECT * FROM ${dataToken.id}`)
     console.log(data[0].result)
     }
+    */
+    }
   }
 
   async function changeAlias(){
+    
     console.log(alias())
     let jwt = token().split(".")
     console.log(atob(jwt[1]))
@@ -43,11 +49,13 @@ export default function ChangeAlias(){
 
     let data = await SurealDB.query(`UPDATE ${dataToken.id} SET alias = '${alias()}';`)
     console.log(data[0].result)
+    
   }
 
   getInfo();
 
   function postAPI(){
+    /*
     fetch('http://localhost:3000/api/user',{
       method:'POST',
       headers:{
@@ -55,6 +63,7 @@ export default function ChangeAlias(){
       },
       body:JSON.stringify({test:'text'})
     })
+    */
   }
 
   return (<>
