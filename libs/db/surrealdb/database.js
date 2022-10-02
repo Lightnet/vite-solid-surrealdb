@@ -46,9 +46,9 @@ async function queryDB(){
 
 	query = `INFO FOR DB;`;
 	result = await fetchQuerySQL(query)
-	console.log(result)
-	//console.log(result[0].result.sc)
-	//console.log(result[0].result.tb)
+	//console.log(result)
+	console.log(result[0].result.sc)
+	console.log(result[0].result.tb)
 }
 
 async function setupUser(){
@@ -167,16 +167,40 @@ async function setupPost(){
 	let result;
 	let query;
 
-query = `
-DEFINE TABLE post SCHEMALESS
-  PERMISSIONS NONE;
-`;
+//query = `DEFINE TABLE post SCHEMALESS PERMISSIONS NONE;`;
+//query = `DEFINE TABLE post SCHEMALESS;
+//	PERMISSIONS
+//	FOR select, create, update, delete NONE	
+//;`;
+query = `DEFINE TABLE post SCHEMALESS;`;
 result = await fetchQuerySQL(query)
 console.log(result)
 
 query = `
 DEFINE FIELD update ON TABLE todolist TYPE datetime VALUE $before OR time::now();
 DEFINE FIELD created ON TABLE todolist TYPE datetime VALUE time::now();
+`
+result = await fetchQuerySQL(query)
+
+
+}
+
+async function setupMessage(){
+	let result;
+	let query;
+
+//query = `DEFINE TABLE message SCHEMALESS PERMISSIONS NONE;`;
+query = `
+DEFINE TABLE message SCHEMALESS
+	PERMISSIONS
+		FOR select, create, update, delete NONE
+;`;
+result = await fetchQuerySQL(query)
+console.log(result)
+
+query = `
+DEFINE FIELD update ON TABLE message TYPE datetime VALUE $before OR time::now();
+DEFINE FIELD created ON TABLE message TYPE datetime VALUE time::now();
 `
 result = await fetchQuerySQL(query)
 
@@ -190,8 +214,10 @@ export async function setupDatabase(){
 	await queryDB();
 	await setupEvent();//debug?
 	await setupUser();
-	
+
 	//await setupToDoList()
+	await setupPost();
+	await setupMessage()
 
 console.log("----")
 

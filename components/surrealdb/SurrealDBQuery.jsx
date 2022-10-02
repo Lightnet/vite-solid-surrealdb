@@ -50,9 +50,8 @@ export default function SurrealDBQuery() {
       });
       await db.use('test', 'test');
       //console.log(db)
-
-      let result = await db.query('SELECT * from user;');
-      console.log(result)
+      //let result = await db.query('SELECT * from user;');
+      //console.log(result)
     }catch(e){
       console.log(e.message)
     }
@@ -93,8 +92,36 @@ export default function SurrealDBQuery() {
     //await db.close();
   }
 
+  async function SDBAccessGetPost(){
+    try{
+      let result = await db.query(`SELECT * FROM post;`);
+      console.log(result)
+      console.log(result[0].result)
+  
+    }catch(e){
+      console.log(e.message)
+    }
+    //await db.close();
+  }
+
+  async function SDBAccessCreatePost(){
+    try{
+      let id =  crypto.randomUUID()
+      console.log(id)
+      let result = await db.query(`CREATE post SET content="hello ${id}}";`);
+      console.log(result)
+      console.log(result[0].result)
+  
+    }catch(e){
+      console.log(e.message)
+    }
+    //await db.close();
+  }
+
   onCleanup(async ()=>{
-    await db.close();
+    if(db){
+      await db.close();
+    }
   })
 
   return (<>
@@ -103,6 +130,8 @@ export default function SurrealDBQuery() {
       <button onClick={SurrealDBSignUp}> SurrealDB SignUp </button>
       <button onClick={SurrealDBSignIn}> SurrealDB SignIn </button>
       <button onClick={SurrealDBTokenQuery}> SurrealDB Token Query User </button>
+      <button onClick={SDBAccessGetPost}> SurrealDB Token Query get Post </button>
+      <button onClick={SDBAccessCreatePost}> SurrealDB Token Query Create Post </button>
     </div>
   </>)
 }

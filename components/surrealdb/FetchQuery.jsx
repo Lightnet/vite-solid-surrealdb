@@ -84,6 +84,41 @@ export default function FetchQuery() {
       setToken(data.token)
     }
   }
+
+  async function fetchTokenGetPosts(){
+    let query = `SELECT * FROM post;`;
+    let response = await fetch(`http://localhost:8000/sql`, {
+      method: 'POST',
+      headers:{
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + token()
+      },
+      body: query
+    })
+    let data = await response.json();
+    console.log(data);
+    if(data?.token){
+      setToken(data.token)
+    }
+  }
+
+  async function fetchTokenCreatePost(){
+    let id =  crypto.randomUUID()
+    let query = `CREATE post SET content="hello ${id}}";`;
+    let response = await fetch(`http://localhost:8000/sql`, {
+      method: 'POST',
+      headers:{
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + token()
+      },
+      body: query
+    })
+    let data = await response.json();
+    console.log(data);
+    if(data?.token){
+      setToken(data.token)
+    }
+  }
   
   return (<>
     <div>
@@ -91,6 +126,8 @@ export default function FetchQuery() {
       <button onClick={fetchSignUp}> Fetch Sign Up </button>
       <button onClick={fetchSignIn}> Fetch Sign In </button>
       <button onClick={fetchTokenQuery}> Fetch Token User </button>
+      <button onClick={fetchTokenGetPosts}> Fetch get Posts </button>
+      <button onClick={fetchTokenCreatePost}> Fetch Create Post </button>
     </div>
   </>)
 }
