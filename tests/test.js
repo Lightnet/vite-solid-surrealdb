@@ -206,22 +206,21 @@ async function mainPoint(){
   await setupUser();
   await setupMessage()
 
-
 //data = await signUp({email:'test4',pass:'test'})//return json
 //data = await signIn({email:'test3',pass:'test'});//return json
 
 //data = await signUp();//return json
-data = await signIn();//return json
-console.log(data);
-if(data?.details != null && data?.details=='Authentication succeeded'){
-  token = data.token
+//data = await signIn();//return json
+//console.log(data);
+//if(data?.details != null && data?.details=='Authentication succeeded'){
+  //token = data.token
   //console.log(token)
-}else{
+//}else{
   //console.log("ERROR!!!")
-  throw new Error('Fail Auth!');
-}
+  //throw new Error('Fail Auth!');
+//}
 //get messages
-await getMessages(token);
+//await getMessages(token);
 //post message
 //await postMessage(token);
 //await postMessageByUserID(token);

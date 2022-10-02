@@ -1,9 +1,11 @@
+// 
+// can't get it to work...
 // https://nodejs.org/api/http.html#httprequestoptions-callback
 // https://nodejs.org/en/knowledge/HTTP/clients/how-to-create-a-HTTP-request/
 // https://blog.logrocket.com/5-ways-to-make-http-requests-in-node-js/
 // 
 // 
-// 
+
 
 import http from 'http';
 
@@ -28,9 +30,9 @@ function rootQuery(){
       'Accept': 'application/json',
       'NS': 'test', // Specify the namespace
       'DB': 'test', // Specify the database
-      //"Authorization": 'Basic ' + textToBase64('root'+':'+'root') ,
+      "Authorization": 'Basic ' + textToBase64('root'+':'+'root') ,
     },
-    auth:'root'+':'+'root'
+    //auth:'root'+':'+'root'
   };
 
   const req = http.request(options, (res) => {
@@ -57,8 +59,43 @@ function rootQuery(){
   req.end();
 }
 
+function rootQuery01(){
+  var options = {
+    method: 'POST',
+    headers:{
+      'Accept': 'application/json',
+      'NS': 'test', // Specify the namespace
+      'DB': 'test', // Specify the database
+      "Authorization": 'Basic ' + textToBase64('root'+':'+'root') ,
+    },
+    //auth:'root'+':'+'root'
+  };
 
-rootQuery();
+  const request = http.request('http://localhost:8000/sql',options,res=>{
+    console.log(`STATUS: ${res.statusCode}`);
+    console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+    //console.log(res)
+    let data = '';
+    res.setEncoding('utf8');
+    res.on('data', (chunk) => {
+      console.log(`BODY: ${chunk}`);
+      data += chunk;
+    });
+    res.on('end', () => {
+      console.log('No more data in response.');
+      console.log(JSON.parse(data));
+    });
+  })
+  request.write(`SELECT * FROM user;`);
+  request.end();
+}
+
+try{
+  //rootQuery();
+  rootQuery01();
+}catch(e){
+  console.log(e)
+}
 
 /*
 const callback = function(response) {
