@@ -20,7 +20,7 @@ export default function AxiosQuery() {
 
     axios.post('http://localhost:8000/sql', query, {
       headers: {
-        'Content-Type': 'application/json',
+        'Accept': 'application/json',
         'NS':'test',
         'DB':'test',
         'Authorization': 'Basic ' + btoa('root'+':'+'root')
@@ -48,7 +48,7 @@ export default function AxiosQuery() {
       pass:'pass'
     }, {
       headers: {
-        'Content-Type': 'application/json'
+        'Accept': 'application/json'
       },
       //transformRequest: [function (data, headers) {// not needed for signup
         // Do whatever you want to transform the data
@@ -57,6 +57,10 @@ export default function AxiosQuery() {
       //}],
     }).then(data=>{
       console.log(data)
+      if(data?.data?.token != null){
+        console.log("token found!")
+        setToken(data.data.token)
+      }
     }).catch(err=>{
       console.log(err)
       console.log(err.code)
@@ -73,7 +77,7 @@ export default function AxiosQuery() {
       pass:'pass'
     }, {
       headers: {
-        'Content-Type': 'application/json'
+        'Accept': 'application/json'
       },
       //transformRequest: [function (data, headers) {// not needed for signin
         // Do whatever you want to transform the data
@@ -82,7 +86,11 @@ export default function AxiosQuery() {
       //}],
     }).then(data=>{
       console.log(data)
-      setToken(data.data)
+      if(data?.data?.token != null){
+        console.log("token found!")
+        setToken(data.data.token)
+      }
+      
     }).catch(err=>{
       console.log(err)
       console.log(err.code)
@@ -94,7 +102,7 @@ export default function AxiosQuery() {
     let query = "SELECT * FROM user;"
     axios.post('http://localhost:8000/sql', query, {
       headers: {
-        'Content-Type': 'application/json',
+        'Accept': 'application/json',
         'Authorization': 'Bearer ' + token()
       },
       transformRequest: [function (data, headers) {//need to query sql

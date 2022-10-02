@@ -23,13 +23,16 @@ function textToBase64(params){
 // this is for DEFINE set up as surreal.query() does not work for some reason.
 // https://surrealdb.com/docs/integration/libraries/nodejs#query
 async function fetchQuerySQL(query){
+	// https://surrealdb.com/blog/release-v1-0-0-beta-8
+	//Use Accept header instead of Content-Type header for client content negotiation
+
 	let response = await nodefetch('http://localhost:8000/sql',{
 		method:'POST',
 		headers:{
 			"Authorization": 'Basic ' + textToBase64('root'+':'+'root') ,
 			"NS": "test",
 			"DB": "test",
-			"Content-Type":"application/json"
+			"Accept":"application/json"
 		},
 		body:query
 	})
@@ -43,9 +46,9 @@ async function queryDB(){
 
 	query = `INFO FOR DB;`;
 	result = await fetchQuerySQL(query)
-	//console.log(result)
-	console.log(result[0].result.sc)
-	console.log(result[0].result.tb)
+	console.log(result)
+	//console.log(result[0].result.sc)
+	//console.log(result[0].result.tb)
 }
 
 async function setupUser(){
@@ -55,7 +58,7 @@ async function setupUser(){
 query = `
 DEFINE TABLE user SCHEMALESS
   PERMISSIONS
-    FOR select, update WHERE user = $auth.id,
+    FOR select, update WHERE user = $auth.id AND http::post('http://localhost:3000/api/user', { action: $event, data: $this, auth: $auth, scope: $scope, test:"e" }) != NONE,
     FOR create, delete NONE;
 DEFINE INDEX idx_email ON user COLUMNS email UNIQUE;
 DEFINE FIELD created ON TABLE user TYPE datetime VALUE $before OR time::now();
@@ -188,7 +191,7 @@ export async function setupDatabase(){
 	await setupEvent();//debug?
 	await setupUser();
 	
-	await setupToDoList()
+	//await setupToDoList()
 
 console.log("----")
 

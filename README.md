@@ -226,6 +226,16 @@ http::post('http://localhost:3000/api', { action: $event, data: $this })
 ```
 	It is possible use proxy for handle email, token, and other things dev for api to custom events.
 
+### http::post :
+```
+DEFINE TABLE user SCHEMALESS
+  PERMISSIONS
+    FOR select, update WHERE user = $auth.id AND http::post('http://localhost:3000/api/user', { action: $event, data: $this, auth: $auth, scope: $scope, test:"e" }) != NONE,
+    FOR create, delete NONE;
+```
+	Since the bug in $auth. I have another idea but it can be hacked. Using the proxy request query back using the http node server to process the data. Example query user and send it back to the permission as well other things. But sent out single variable? Need more R&D if the logic script on SurrealDB SQL language.
+
+
 # Credits:
  - SurrealDB discord
  - 

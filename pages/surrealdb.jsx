@@ -7,7 +7,9 @@
 //import { Link } from '@solidjs/router'
 //import { createEffect } from 'solid-js'
 //import { useAuth } from '../components/auth/AuthProvider';
-import RootQuery from "../components/surrealdb/RootQuery";
+import AxiosQuery from "../components/surrealdb/AxiosQuery";
+import FetchQuery from "../components/surrealdb/FetchQuery";
+import XMLQuery from "../components/surrealdb/XMLQuery";
 
 export default function PageIndex() {
 
@@ -15,7 +17,9 @@ export default function PageIndex() {
 
   return (
     <div>
-      <RootQuery />
+      <FetchQuery />
+      <AxiosQuery />
+      <XMLQuery />
     </div>
   )
 }

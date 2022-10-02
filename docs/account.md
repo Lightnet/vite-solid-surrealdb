@@ -3,6 +3,48 @@
  - auth.id is null might not work...
   Work in progress.
 
+# sql variable
+```
+$auth - current user login or access
+$auth.id 
+$this - current table
+$event - for select, create, update, delete 
+$scope - access
+$token - jwt
+```
+
+# url
+```
+/signup
+/signin
+/health
+```
+ 
+ SQL
+```
+DEFINE TOKEN ... ON SCOPE ...
+```
+
+```
+// It is now possible to define a new Record ID as normal
+LET $friend = (CREATE person SET name = 'Jaime');
+// There is no need to select the `id` field using `$friend.id`
+CREATE person SET name = 'Tobie', friend = $friend;
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 https://discord.com/channels/902568124350599239/1023677689082683514/1023678228398886952
 ```
@@ -44,17 +86,6 @@ let info = await db.query('SELECT * FROM $auth');
 ```
 
 
-
-
-
-
-
-
-
-
-
-
-
 https://discord.com/channels/902568124350599239/902568124350599242/1023665441807282256
 ```
 -- Specify access permissions for the 'post' table
@@ -77,19 +108,10 @@ DEFINE TABLE post SCHEMALESS
 ```
 
 
-
-
-
-
-
-
-
 https://discord.com/channels/902568124350599239/902568124350599242/1020490083079573504
 ```
 DEFINE FIELD password ON user TYPE string PERMISSIONS NONE;
 ```
-
-
 
 
 # sql varablie
