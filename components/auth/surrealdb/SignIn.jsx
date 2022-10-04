@@ -32,8 +32,8 @@ export default function SignIn() {
         pass: passphrase()
       })
       let userData = await SurrealDB.query(`SELECT * FROM user WHERE email = "${email()}";`)
-      setUser(userData[0].result[0].alias)
       console.log(userData)
+      //setUser(userData[0].result[0].alias)
       console.log(token);
       setToken(token)
       setStatus("PASS!")

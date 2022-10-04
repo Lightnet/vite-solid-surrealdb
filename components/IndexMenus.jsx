@@ -22,6 +22,7 @@ const IndexMenus = () => {
   let whitelist = [
     "/",
     "/about",
+    "/blog",
     "/account",
     "/signin",
     "/signup",
@@ -29,6 +30,7 @@ const IndexMenus = () => {
     "/testlab",
     "/surrealdb",
     "/todolist",
+    "/forum",
   ];
 
   const displayMenu = createMemo(()=>{
@@ -44,10 +46,12 @@ const IndexMenus = () => {
       return ( <div>
         <Link class="btnLink" href="/">Home</Link><span> | </span>
         <Link class="btnLink" href="/about">About</Link><span> | </span>
+        <Link class="btnLink" href="/blog">Blog</Link><span> | </span>
         <Link class="btnLink" href="/account">Account</Link><span> | </span>
         <Link class="btnLink" href="/testlab">Test Lab</Link><span> | </span>
         <Link class="btnLink" href="/surrealdb">SurrealDB</Link><span> | </span>
         <Link class="btnLink" href="/todolist">To Do List</Link><span> | </span>
+        <Link class="btnLink" href="/forum">Forum</Link><span> | </span>
         <ToggleTheme />
         </div>)
     }else{

@@ -8,6 +8,7 @@ import { useNavigate } from "@solidjs/router";
 import { createSignal } from "solid-js";
 import ChangeAlias from "../components/account/api/ChangeAlias";
 import { useAuth } from "../components/auth/surrealdb/AuthProvider"
+import TextEditor from "../components/texteditors/TextEditor";
 
 export default function PageBlog() {
 
@@ -47,6 +48,8 @@ export default function PageBlog() {
     <label> Content </label>
     <textarea  value={blogContent()} onInput={(e)=>setBlogContent(e.target.value)} ></textarea><br/>
     <button onClick={addBlogs}> Create </button>
+
+    <TextEditor/>
   </div>
   <div>
 

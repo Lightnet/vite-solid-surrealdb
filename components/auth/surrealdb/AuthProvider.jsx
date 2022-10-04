@@ -60,9 +60,9 @@ export default function AuthProvider(props){
       if(strToken){
         //console.log(strToken)
         let userData = jwtUser(strToken);
-        //console.log(userData)
+        console.log(userData)
         //setUser(userData.split(":")[0])
-        setUserID(userData.id.split(":")[1]);
+        setUserID(userData.ID.split(":")[1]);
         setIsLogin(true);
         console.log("LOGIN TRUE?")
       }else{

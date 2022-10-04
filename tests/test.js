@@ -148,6 +148,7 @@ async function setupUser(){
   query = 
 `DEFINE TABLE user SCHEMALESS;
 DEFINE INDEX idx_email ON user COLUMNS email UNIQUE;
+DEFINE INDEX idx_alias ON user COLUMNS alias UNIQUE;
 `;
 //set up table user
 //define email field if UNIQUE id
@@ -159,7 +160,7 @@ DEFINE SCOPE allusers
 	SESSION 14d
 	SIGNUP ( CREATE user SET email = $email, pass = crypto::argon2::generate($pass) )
 	SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
-`;
+;`;
 data = await fetchQuerySQL(query)
 console.log(data)
 }

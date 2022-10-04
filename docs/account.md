@@ -35,8 +35,20 @@ CREATE person SET name = 'Tobie', friend = $friend;
 
 
 
+https://discord.com/channels/902568124350599239/1025048139968815194
 
+```
+DEFINE FIELD account ON TABLE note
+  PERMISSIONS
+    FOR create, update, select, delete
+      WHERE account = $auth.account -- The user can only access/modify notes, if the account matches the account they belong to
+;
+```
 
+```
+DEFINE SCOPE account;
+DEFINE TOKEN my_token ON SCOPE account TYPE HS512 VALUE "my_secret_encryption_key";
+```
 
 
 

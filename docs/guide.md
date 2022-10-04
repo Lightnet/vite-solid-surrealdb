@@ -1,13 +1,13 @@
 
 # Surreal Database Features:
 
-	To have up to date modern type of database in sql.
+	To the have improve features for more then SQl. Well there is postgresql. SurrealDB will add more features.
 
-	Required some knowlege using some http request for REST SQL.
+	One is reason is have some easy way to handle server and client query in websocket and http and rest api.
 
-	There is client REST API.
+	Required some knowlege using some http request and some SQL language.
 
-	Note learning not read the docs fully.
+	Note learning not read the docs fully. This docs is messy still work in progress.
 
 # Guide:
  - https://www.youtube.com/watch?v=LCAIkx1p1k0
@@ -20,17 +20,135 @@
 - REST Endpoints
 - user / auth
 
-## table system
-	The sql logic is diferent. But update to reflect features.
+## Table system
+	The sql logic is same and diferent a bit. One reason is table id handle. But update to reflect features.
+
+	Docs can be fun here: https://surrealdb.com/docs/surrealql/statements/define
 
 ```
 CREATE table:id
 ```
+By default random id.
 
 ```
-CREATE table
+CREATE message SET content = "Hello World!";
 ```
-by default random id
+If there "message:id" by random id.
+
+```
+CREATE message:welcome SET content = "Hello World!";
+```
+  unique table id
+
+There one problem is user can't access without permission as well the table does not exist.
+
+```
+USE NS test DB test;
+DEFINE TABLE message SCHEMALESS
+  PERMISSIONS
+    FOR select, create NONE;
+```
+  Here this will define table and permission for user who login for access.
+
+# Auth and Permission:
+	By default user can't use table which required set up for permission. As well user account. Still follow basic of table set up.
+
+	Next is set up name space and database name. The reason is permission is use by root admin to create the name space, database and table and other features.
+
+```
+USE NS test DB test;
+DEFINE TABLE user SCHEMALESS
+  PERMISSIONS
+    FOR select, create NONE;
+```
+SCHEMALESS = not strict
+SCHEMAFULL = strict, prevent over adding things
+
+	Next we set up simple access by using the SCOPE for user need to tag in signup and signin access check for table.
+
+  Note there different way to set up signup and signin. SurrealDB use post format in json for http in signin and signup. It can be use as email or user. As long the param matches the query.
+
+```
+  http://localhost:8000/signin
+  method: 'POST'
+  headers:{'Accept': 'application/json'}
+  body: JSON.stringify({
+    NS:'test', // name space
+    DB:'test', // database
+    SC:'allusers',// scope
+    email: options.email ||'test@test.test', // user > email
+    pass: options.pass || "pass" // user > pass
+  })
+```
+  It would convert to match the params.
+```
+  DEFINE SCOPE allusers SESSION 24h
+    SIGNUP ( CREATE user SET email = $email, pass = crypto::argon2::generate($pass) )
+    SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
+  ;
+```
+
+
+```
+import SurrealDB from 'surrealdb.js';
+const db = new SurrealDB('http://127.0.0.1:8000/rpc');
+await db.wait();
+await db.use('test', 'test');
+```
+
+
+```
+db.signin({
+  user: 'root',
+  pass: 'root',
+});
+```
+  This is for admin level full access
+
+
+```
+db.signin({
+  NS: 'test', // access is restrict to name space
+  DB: 'test', // access is restrict to table query by need set up.
+  SC:'allusers' // access is restrict to table query by need set up.
+  user: 'my_login',
+  pass: '123456',
+});
+```
+  This is normal access
+```
+db.signin({
+  NS: 'test', // access is restrict to name space
+  DB: 'test', // access is restrict to table query by need set up.
+  SC:'allusers' // access is restrict to table query by need set up.
+  email: 'my_login',
+  pass: '123456',
+});
+```
+  This is normal access
+
+
+```
+DEFINE SCOPE allusers 
+SESSION 14d
+SIGNUP (
+  CREATE type::thing("user", string::lowercase(string::trim($id)))
+  SET pass = crypto::argon2::generate($pass)
+)
+SIGNIN (
+  SELECT * FROM type::thing("user", string::lowercase(string::trim($id)))
+  WHERE crypto::argon2::compare(pass, $pass)
+)
+```
+
+```
+USE NS test DB test;
+DEFINE SCOPE allusers SESSION 24h
+  SIGNUP ( CREATE user SET email = $email, pass = crypto::argon2::generate($pass) )
+  SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
+;
+```
+
 
 
 https://www.youtube.com/watch?v=DPQbuW9dQ7w

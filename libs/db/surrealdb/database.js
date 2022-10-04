@@ -58,7 +58,7 @@ async function setupUser(){
 query = `
 DEFINE TABLE user SCHEMALESS
   PERMISSIONS
-    FOR select, update WHERE user = $auth.id AND http::post('http://localhost:3000/api/user', { action: $event, data: $this, auth: $auth, scope: $scope, test:"e" }) != NONE,
+    FOR select, update WHERE id = $auth.id AND http::post('http://localhost:3000/api/user', { action: $event, data: $this, auth: $auth, scope: $scope, token:$token }) != NONE,
     FOR create, delete NONE;
 DEFINE INDEX idx_email ON user COLUMNS email UNIQUE;
 DEFINE FIELD created ON TABLE user TYPE datetime VALUE $before OR time::now();
@@ -143,12 +143,12 @@ DEFINE TABLE todolist SCHEMALESS
 result = await fetchQuerySQL(query)
 console.log(result)
 
-//query = `
-//DEFINE FIELD update ON TABLE todolist TYPE datetime VALUE $before OR time::now();
-//DEFINE FIELD created ON TABLE todolist TYPE datetime VALUE time::now();
-//DEFINE FIELD content ON TABLE todolist TYPE string;
-//`
-//result = await fetchQuerySQL(query)
+query = `
+DEFINE FIELD update ON TABLE todolist TYPE datetime VALUE $before OR time::now();
+DEFINE FIELD created ON TABLE todolist TYPE datetime VALUE time::now();
+DEFINE FIELD content ON TABLE todolist TYPE string;
+`;
+result = await fetchQuerySQL(query)
 
 //query = `DEFINE FIELD user ON TABLE todolist TYPE string VALUE $value;`;
 //result = await fetchQuerySQL(query)
@@ -215,7 +215,7 @@ export async function setupDatabase(){
 	await setupEvent();//debug?
 	await setupUser();
 
-	//await setupToDoList()
+	await setupToDoList()
 	await setupPost();
 	await setupMessage()
 
