@@ -12,10 +12,10 @@ import RawTool from '@editorjs/raw';
 import CodeTool from '@editorjs/code';
 
 
-export default function TextEditor(props){
+export default function TextBoard(props){
 
   const [editor, setEditor] = createSignal(null)
-  const [readyOnly, setReadOnly] = createSignal(props?.readyonly || false)
+  const [readyOnly, setReadOnly] = createSignal(props?.readyonly || true)
   const [editorID, setEditorID] = createSignal(crypto.randomUUID())
   let ref;
 
@@ -67,11 +67,10 @@ export default function TextEditor(props){
             if(props.value == "null"){
               return;
             }
-            console.log("data:", props.value)
-            
+            //console.log("data:", props.value)
             let data = props.value
             data = JSON.parse(data)
-            console.log(data)
+            //console.log(data)
             //data = data.blocks;
             //editor().render({blocks:data})
             //let blocks = [{data:{text: "Hello World!"},id: "6qbjgNULnz",type: "paragraph"}]
@@ -85,7 +84,7 @@ export default function TextEditor(props){
     });
     //editor.readOnly.toggle();
     setEditor(_editor);
-    console.log(_editor)
+    //console.log(_editor)
 
     //editor().render({blocks:blocks})
     
@@ -109,7 +108,7 @@ export default function TextEditor(props){
   }
 
   return (<>
-    <div ref={ref} id={editorID()} style="background-color:white;">
+    <div ref={ref} id={editorID()} style="background-color:white;height:100px;">
     </div>
   </>)
 }

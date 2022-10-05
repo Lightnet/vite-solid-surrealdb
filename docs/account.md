@@ -25,15 +25,125 @@ $token - jwt
 DEFINE TOKEN ... ON SCOPE ...
 ```
 
+https://discord.com/channels/902568124350599239/902568124350599242/1025066682135359710
+```
+DEFINE LOGIN test ON NAMESPACE PASSWORD '123456'
+DEFINE TOKEN test ON NAMESPACE TYPE HS512 VALUE 'somekey'
+
+DEFINE LOGIN test ON DATABASE PASSWORD '123456'
+DEFINE TOKEN test ON DATABASE TYPE HS512 VALUE 'somekey'
+```
+
+https://discord.com/channels/902568124350599239/1025048139968815194/1025055707952844863
+```
+DEFINE SCOPE account SESSION 24h
+  SIGNUP ( CREATE user SET email = $email, pass = crypto::argon2::generate($pass) )
+  SIGNIN ( SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass) )
+;
+```
+```
+DEFINE FIELD account ON TABLE note
+  PERMISSIONS
+    FOR create, update, select, delete
+      WHERE account = $auth.account -- The user can only access/modify notes, if the account matches the account they belong to
+;
+```
+
+```
+DEFINE SCOPE account;
+DEFINE TOKEN my_token ON SCOPE account TYPE HS512 VALUE "my_secret_encryption_key";
+```
+
+https://discord.com/channels/902568124350599239/1025048139968815194/1025056823239258152
+
+```
+DEFINE TABLE contact SCHEMAFULL
+  PERMISSIONS
+    FOR select
+        WHERE ($scope = "account" AND account = $account AND (SELECT * FROM $auth.access WHERE account = $account AND (admin = true OR permissions.crm ∋ "s") LIMIT 1))
+        OR ($scope = "contact" AND id = $auth.id)
+        OR ($scope = "contact" AND distinct(applications.*.campaign.*.connections.*.contact) ∋ $auth.id)
+        OR ($scope = "contact" AND distinct(connections.*.campaign.*.connections.*.contact) ∋ $auth.id)
+    FOR create
+        WHERE ($scope = "account" AND account = $account AND (SELECT * FROM $auth.access WHERE account = $account AND (admin = true OR permissions.crm ∋ "c") LIMIT 1))
+    FOR update
+        WHERE ($scope = "account" AND account = $account AND (SELECT * FROM $auth.access WHERE account = $account AND (admin = true OR permissions.crm ∋ "u") LIMIT 1))
+        OR ($scope = "contact" AND id = $auth.id)
+        OR ($scope = "contact" AND distinct(applications.*.campaign.*.connections.*.contact) ∋ $auth.id)
+    FOR delete
+        WHERE ($scope = "account" AND account = $account AND (SELECT * FROM $auth.access WHERE account = $account AND (admin = true OR permissions.crm ∋ "d") LIMIT 1))
+```
+
+https://discord.com/channels/902568124350599239/902568124350599242/1018954702706188368
+
+```
+{
+    "iss": "auth.hakio.io",
+    "iat": 1662994800,
+    "exp": 1694530800,
+    "nbf": 1662994800,
+    "ns": "nordgreen",
+    "db": "nordgreen",
+    "tk": "workflows",
+    "role": [
+       "developer", 
+       "guest"
+    ],
+    "company": "nordgreen",
+    "aud": "app.hakio.com",
+    "sub": "devops@nordgreen.com"
+}
+```
+
+https://discord.com/channels/902568124350599239/1024230275661709313/1024233104291934268
+```
+DEFINE FIELD username ON TABLE user TYPE string
+  PERMISSIONS
+    FOR select FULL,
+    FOR create, update, delete NONE
+;
+```
+```
+-- Specify access permissions for the 'post' table
+DEFINE TABLE post SCHEMALESS
+    PERMISSIONS
+        FOR select
+            -- Published posts can be selected
+            WHERE published = true
+            -- A user can select all their own posts
+            OR user = $auth.id
+        FOR create, update
+            -- A user can create or update their own posts
+            WHERE user = $auth.id && http::post('/api/validate', this) != NONE
+        FOR delete
+            -- A user can delete their own posts
+            WHERE user = $auth.id
+            -- Or an admin can delete any posts
+            OR $auth.admin = true
+;
+```
+
+https://discord.com/channels/902568124350599239/970338835990974484/1026455501225066566
+```
+define table user PERMISSIONS FOR select where $token.id.role == 'admin' or id == $token.id;
+DEFINE FIELD role ON TABLE user PERMISSIONS FOR select WHERE $auth.role == "admin" || id == $auth.id;
+```
+
+
+
+
+
+
+
+
+
+
 ```
 // It is now possible to define a new Record ID as normal
 LET $friend = (CREATE person SET name = 'Jaime');
 // There is no need to select the `id` field using `$friend.id`
 CREATE person SET name = 'Tobie', friend = $friend;
 ```
-
-
-
 
 https://discord.com/channels/902568124350599239/1025048139968815194
 

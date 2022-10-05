@@ -1,4 +1,26 @@
 
+https://discord.com/channels/902568124350599239/970338835990974484/1018879475854889022
+```
+DEFINE PARAM $PI ON DATABASE VALUE 3.14;
+```
+  global var
+```
+SELECT * FROM user WHERE age > $PI;
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 https://discord.com/channels/902568124350599239/1013527402674139268/1021058706080813166
 
